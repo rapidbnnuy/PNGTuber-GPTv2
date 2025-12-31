@@ -73,16 +73,25 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                         using (var db = new LiteDatabase($"Filename={_dbPath}"))
                         {
                             var col = db.GetCollection<BsonDocument>("user_nicknames");
-                            
-                            var doc = new BsonDocument
-                            {
-                                ["UserId"] = userId,
-                                ["Nickname"] = nickname,
-                                ["UpdatedAt"] = DateTime.UtcNow
-                            };
+                            var existing = col.FindOne(x => x["UserId"] == userId);
 
-                            col.Upsert(doc);
-                            col.EnsureIndex("UserId");
+                            if (existing != null)
+                            {
+                                existing["Nickname"] = nickname;
+                                existing["UpdatedAt"] = DateTime.UtcNow;
+                                col.Update(existing);
+                            }
+                            else
+                            {
+                                var doc = new BsonDocument
+                                {
+                                    ["UserId"] = userId,
+                                    ["Nickname"] = nickname,
+                                    ["UpdatedAt"] = DateTime.UtcNow
+                                };
+                                col.Insert(doc);
+                                col.EnsureIndex("UserId");
+                            }
                         }
                     }
                     catch (Exception ex)
