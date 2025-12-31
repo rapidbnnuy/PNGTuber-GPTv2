@@ -1,0 +1,37 @@
+using System;
+using System.Collections.Generic;
+using PNGTuber_GPTv2.Domain.Entities;
+using PNGTuber_GPTv2.Domain.Structs;
+
+namespace PNGTuber_GPTv2.Domain.DTOs
+{
+    // A MUTABLE context object that flows through the pipeline.
+    // This is NOT an Entity (persisted to DB as-is) but a working object.
+    public class RequestContext
+    {
+        public string RequestId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        
+        // Input Args (Raw)
+        public Dictionary<string, object> RawArgs { get; set; }
+
+        // Resolved Identity
+        public User User { get; set; }
+        public Pronouns Pronouns { get; set; }
+
+        // Chat State
+        public string CleanedMessage { get; set; }
+        public bool IsModerationFlagged { get; set; }
+        public string ModerationReason { get; set; }
+
+        // Output
+        public string GeneratedResponse { get; set; }
+
+        public RequestContext()
+        {
+            RequestId = Guid.NewGuid().ToString("N");
+            CreatedAt = DateTime.UtcNow;
+            RawArgs = new Dictionary<string, object>();
+        }
+    }
+}
