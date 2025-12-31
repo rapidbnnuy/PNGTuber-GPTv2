@@ -183,3 +183,16 @@ Although LiteDB is a Document Store, we enforce a **Relational Schema**.
 ### 10.3 Id Standards
 - **External Entities (Users, Streamers)**: Use String IDs formatted as `platform:id` to prevent collisions.
 - **Internal Entities (Logs, Events)**: Use `ObjectId` or `int` (AutoId).
+
+## 11. Performance Patterns (Caching)
+
+### 11.1 The "Hot Path" Rule
+- **Rule**: Any data accessed on *every* chat message (e.g., Pronouns, User Context) **MUST** be served from RAM.
+- **Pattern**: `Read-Through Cache`.
+  1. Check `ConcurrentDictionary`.
+  2. If missing, fetch from LiteDB + Insert into Dict.
+  3. If Write, Update LiteDB + Update Dict.
+
+### 11.2 Pronoun Stability
+- **Constraint**: Pronouns are immutable for the duration of a session unless explicitly updated via command.
+- **Reasoning**: We prioritize correctness and speed. DB Latency on pronouns is unacceptable.
