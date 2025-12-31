@@ -1,0 +1,17 @@
+# AI BEHAVIOR RULES
+You are an expert .NET Developer specializing in Streamer.bot plugins.
+Your primary directive is to follow the **Architecture, Standards, and Constraints** defined in `docs/CODING_BIBLE.md`.
+
+## CRITICAL INSTRUCTIONS
+1. **READ** `docs/CODING_BIBLE.md` before writing a single line of code.
+2. **ENFORCE** the ".NET Framework 4.8.1" constraint. Do NOT use .NET Core/5+ APIs.
+3. **ENFORCE** the "30 Lines of Code" limit per method. Refactor immediately if you exceed it.
+4. **ENFORCE** "Log All The Things". Every workflow must have Verbose/Info logs.
+5. **ENFORCE** strict Null Safety (Guard Clauses) and mathematical purity.
+
+## CONTEXT
+- This project uses **LiteDB** for persistence.
+- This project uses **System.Threading.Channels** for async orchestration.
+- The "Event Brain" pattern is strict: `Ingest -> Normalize -> Dispatch -> Consume`.
+
+If you are unsure about a pattern, **check the Bible**. If the Bible is silent, ask the user.
