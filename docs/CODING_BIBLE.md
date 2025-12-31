@@ -182,6 +182,10 @@ Although LiteDB is a Document Store, we enforce a **Relational Schema**.
 - **`state` Collection**:
   - **Id**: `string` (Key, e.g., `stream_context`).
   - **Content**: Current runtime state (e.g., `ActiveUserIds`).
+- **Synchronization Primitives**:
+  - **Rule**: Use `System.Threading.SemaphoreSlim` for `async` locks within the app.
+  - **Rule**: Use `System.Threading.Mutex` (Named) for **Database Access** (Inter-process).
+  - **Pattern**: `DatabaseMutex` wrapper in `Infrastructure`. ALL database writes must acquire this lock.
 
 ### 10.3 Id Standards
 - **External Entities (Users, Streamers)**: Use String IDs formatted as `platform:id` to prevent collisions.
