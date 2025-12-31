@@ -41,13 +41,13 @@ namespace PNGTuber_GPTv2.Crypto
                     CreatedAt = DateTime.UtcNow
                 };
 
-                // Coordinator Logic: Determine Type
+
                 if (args.TryGetValue("commandId", out var cmdId))
                 {
                     context.EventType = "Command";
                     context.CommandId = cmdId.ToString();
                 }
-                else if (args.ContainsKey("message")) // Fallback if no commandId
+                else if (args.ContainsKey("message"))
                 {
                     context.EventType = "Chat";
                 }

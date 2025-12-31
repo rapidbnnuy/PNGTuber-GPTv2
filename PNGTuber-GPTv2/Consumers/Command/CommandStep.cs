@@ -40,8 +40,7 @@ namespace PNGTuber_GPTv2.Consumers.Command
 
         private async Task HandleNativeCommand(RequestContext ctx, CancellationToken ct)
         {
-            // TODO: Map Real Streamer.bot GUIDs here
-            // if (ctx.CommandId == "GUID-FOR-SETNICK") ...
+
         }
 
         private async Task HandleTextCommand(RequestContext context, CancellationToken ct)
@@ -57,10 +56,10 @@ namespace PNGTuber_GPTv2.Consumers.Command
         private async Task HandleSetNick(RequestContext ctx, string newNick, CancellationToken ct)
         {
             if (string.IsNullOrEmpty(newNick)) return;
-            if (newNick.Length > 30) return; // Limit length
+            if (newNick.Length > 30) return;
 
             await _nicknames.SetNicknameAsync(ctx.User.Id, newNick, ct);
-            ctx.GeneratedResponse = $"Nickname set to {newNick}!"; // Feedback
+            ctx.GeneratedResponse = $"Nickname set to {newNick}!";
             _logger.Info($"User {ctx.User.DisplayName} set nickname to {newNick}");
         }
 

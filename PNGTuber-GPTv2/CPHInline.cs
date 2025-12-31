@@ -38,7 +38,7 @@ namespace PNGTuber_GPTv2
             
             TryAddVar(eventArgs, "commandId");
             TryAddVar(eventArgs, "command");
-            TryAddVar(eventArgs, "triggerType"); // "Command", "TwitchChatMessage" etc
+            TryAddVar(eventArgs, "triggerType");
             
             TryAddVar(eventArgs, "user");
             TryAddVar(eventArgs, "userName");

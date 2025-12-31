@@ -5,8 +5,7 @@ using PNGTuber_GPTv2.Domain.Structs;
 
 namespace PNGTuber_GPTv2.Domain.DTOs
 {
-    // A MUTABLE context object that flows through the pipeline.
-    // This is NOT an Entity (persisted to DB as-is) but a working object.
+
     public class RequestContext
     {
         public string RequestId { get; set; }
@@ -14,8 +13,8 @@ namespace PNGTuber_GPTv2.Domain.DTOs
         
         public Dictionary<string, object> RawArgs { get; set; }
 
-        public string EventType { get; set; } // "Chat", "Command", "Raid"
-        public string CommandId { get; set; } // If Command
+        public string EventType { get; set; }
+        public string CommandId { get; set; }
 
         public User User { get; set; }
         public Pronouns Pronouns { get; set; }
