@@ -83,11 +83,26 @@ public readonly struct Pronouns
 We use the [Alejo.io Pronouns API](https://pronouns.alejo.io/), which is the de-facto standard for Twitch pronouns (compatible with 7TV/FrankerFaceZ).
 
 - **Endpoint**: `GET /api/users/{login_or_id}`
+- **Supported Sets (Inferred Grammatically)**:
+
+| ID | Display | Subject | Object | Possessive |
+|----|---------|---------|--------|------------|
+| `hehim` | He/Him | He | Him | His |
+| `sheher` | She/Her | She | Her | Her |
+| `theythem` | They/Them | They | Them | Their |
+| `itits` | It/Its | It | Its | Its |
+| `xexem` | Xe/Xem | Xe | Xem | Xyr |
+| `faefaer` | Fae/Faer | Fae | Faer | Faer |
+| `vever` | Ve/Ver | Ve | Ver | Vis |
+| `aeaer` | Ae/Aer | Ae | Aer | Aer |
+| `ziehir` | Zie/Hir | Zie | Hir | Hir |
+| `perper` | Per/Per | Per | Per | Pers |
+| `eem` | E/Em | E | Em | Eir |
+| *(Mixed)* | e.g. He/They | *(Default to Primary)* | | |
+
 - **Mapping**:
-    - `hehim` -> He/Him
-    - `sheher` -> She/Her
-    - `theythem` -> They/Them
-    - `other` -> They/Them (Fallback)
+    - The `AlejoPronounService` robustly extracts the `name` or `pronoun_id` JSON field.
+    - It passes this ID to `Pronouns.MapFromId(id)` which returns a fully hydrated Grammar Struct.
 
 ---
 

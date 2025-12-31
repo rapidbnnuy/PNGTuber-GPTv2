@@ -36,19 +36,29 @@ namespace PNGTuber_GPTv2.Infrastructure.External
 
                 var json = await response.Content.ReadAsStringAsync();
                 
-                // Very naive JSON parsing to avoid heavy Newtonsoft dependency if possible, 
-                // but for reliability we should parse properly. 
-                // Alejo returns: [ { "pronoun_id": "hehim", ... } ] or []
+                // Alejo API JSON (Array of Objects): [{"name":"hehim","display":"He/Him"}, ...]
+                // Or Single Object (older API?): {"name":"..."}
+                // We assume Array based on docs.
                 
-                // For this implementation, we map common IDs manually to our struct.
-                // "hehim" -> He/Him
-                // "sheher" -> She/Her
-                // "theythem" -> They/Them
-                
-                if (json.Contains("\"pronoun_id\":\"hehim\"")) return Pronouns.HeHim;
-                if (json.Contains("\"pronoun_id\":\"sheher\"")) return Pronouns.SheHer;
-                if (json.Contains("\"pronoun_id\":\"theythem\"")) return Pronouns.TheyThem;
-                if (json.Contains("\"pronoun_id\":\"other\"")) return Pronouns.TheyThem; // Fallback safe
+                // Robust ID Extraction (Regex-free simple parse)
+                // We look for "name":"VALUE" or "pronoun_id":"VALUE"
+                string foundId = null;
+
+                if (json.Contains("\"name\":\""))
+                {
+                    foundId = ExtractValue(json, "\"name\":\"", "\"");
+                }
+                else if (json.Contains("\"pronoun_id\":\""))
+                {
+                    foundId = ExtractValue(json, "\"pronoun_id\":\"", "\"");
+                }
+
+                if (!string.IsNullOrEmpty(foundId))
+                {
+                    var p = Pronouns.MapFromId(foundId);
+                    _logger.Debug($"[Alejo] Mapped '{foundId}' -> {p.Display}");
+                    return p;
+                }
                 
                 return null; // None found
             }
@@ -57,6 +67,18 @@ namespace PNGTuber_GPTv2.Infrastructure.External
                 _logger.Warn($"[Alejo] Fetch Failed: {ex.Message}");
                 return null;
             }
+        }
+
+        private string ExtractValue(string source, string startTag, string endTag)
+        {
+            var startIndex = source.IndexOf(startTag);
+            if (startIndex == -1) return null;
+            
+            startIndex += startTag.Length;
+            var endIndex = source.IndexOf(endTag, startIndex);
+            if (endIndex == -1) return null;
+            
+            return source.Substring(startIndex, endIndex - startIndex);
         }
     }
 }
