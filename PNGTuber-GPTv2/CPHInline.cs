@@ -40,6 +40,10 @@ namespace PNGTuber_GPTv2
             _logger = new PNGTuber_GPTv2.Infrastructure.Logging.FileLogger(databasePathVar, configuredLevel);
 
             _logger.Info("PNGTuber-GPTv2 Plugin Initialized.");
+
+            // 4. Initialize Database
+            var dbBootstrapper = new PNGTuber_GPTv2.Infrastructure.Persistence.DatabaseBootstrapper(pluginBaseDir, _logger);
+            dbBootstrapper.Initialize();
             
             // Verify System.Threading.Channels
             var channel = System.Threading.Channels.Channel.CreateUnbounded<string>();

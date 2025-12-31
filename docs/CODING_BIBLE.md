@@ -175,6 +175,9 @@ Although LiteDB is a Document Store, we enforce a **Relational Schema**.
 - **`events` Collection**:
   - **Id**: `ObjectId` (Time-sortable, auto-generated).
   - **Content**: The immutable record of what happened.
+  - **Logging**:
+  - **Rule**: Follow `docs/logging_rules.md` STRICTLY.
+  - **Levels**: Debug (Entry/Exit/JSON), Info (Summary), Warn (Recoverable), Error (Failure). **NO TRACE**.
   - **Refs**: `UserId` pointing to `users`.
 - **`state` Collection**:
   - **Id**: `string` (Key, e.g., `stream_context`).
