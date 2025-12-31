@@ -11,12 +11,14 @@ namespace PNGTuber_GPTv2.Consumers.Identity
     {
         private readonly ICacheService _cache;
         private readonly IPronounRepository _pronouns;
+        private readonly INicknameRepository _nicknames;
         private readonly ILogger _logger;
 
-        public IdentityStep(ICacheService cache, IPronounRepository pronouns, ILogger logger)
+        public IdentityStep(ICacheService cache, IPronounRepository pronouns, INicknameRepository nicknames, ILogger logger)
         {
             _cache = cache;
             _pronouns = pronouns;
+            _nicknames = nicknames;
             _logger = logger;
         }
 
@@ -40,26 +42,30 @@ namespace PNGTuber_GPTv2.Consumers.Identity
                     var userId = uidObj.ToString();
                     var displayName = nameObj.ToString();
 
-                    // 2. Resolve Pronouns via Repository (Cache -> DB -> API)
+                    // 2. Resolve Pronouns (Cache -> DB -> API)
                     var pronouns = await _pronouns.GetPronounsAsync(userId, displayName, ct);
 
-                    // 3. Update Context
+                    // 3. Resolve Nickname (Cache -> DB)
+                    string nickname = await _nicknames.GetNicknameAsync(userId, ct);
+
+                    // 4. Update Context
                     context.User = new User 
                     { 
                         Id = userId,
                         DisplayName = displayName,
+                        Nickname = nickname, // Can be null
                         FirstSeen = DateTime.UtcNow 
                     };
                     context.Pronouns = pronouns;
 
-                    _logger.Debug($"[IdentityStep] ID: {displayName}, Pronouns: {pronouns.Display}");
+                    _logger.Debug($"[IdentityStep] {displayName} ({nickname ?? "No Nick"}) - {pronouns.Display}");
                 }
                 else
                 {
                     _logger.Debug("[IdentityStep] No user info in args. Skipping identity.");
                 }
 
-                // 4. Save Enriched Context
+                // 5. Save Enriched Context
                 _cache.Set(key, context, TimeSpan.FromMinutes(10));
             }
             catch (Exception ex)
