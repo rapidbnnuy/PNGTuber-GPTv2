@@ -79,3 +79,39 @@ try {
 
 ### 5.3 Release
 - **Artifacts**: Compiled DLLs are output to `bin/Release/net481/`.
+
+## 6. Event Brain Architecture
+
+### 6.1 Core Concept
+The "Event Brain" is a high-throughput, microservices-style controller that orchestrates Streamer.bot events.
+- **Ingest**: Receives raw events/args from `CPH`.
+- **Normalize**: Converts raw args into strongly-typed `structs` (Data Transfer Objects).
+- **Dispatch**: Routes verified DTOs to specific **Channels** (queues).
+- **Consume**: Autonomous **Micro-Consumers** pick up tasks from channels and execute them.
+
+### 6.2 The Micro-Consumer Pattern
+Each consumer must be a small, single-responsibility service running asynchronously.
+- **Input**: A strongly-typed struct.
+- **Action**: One specific task (e.g., "Check Pronouns", "Log to DB", "Send Chat").
+- **Output**: Optionally pushes a new result to another Channel (chaining).
+
+```csharp
+// Example Micro-Consumer Signature
+public async Task ProcessAsync(ChatMessage msg, CancellationToken ct) { ... }
+```
+
+## 7. Anti-Patterns & AI Constraints (The "No-Go" Zone)
+
+### 7.1 "Small, Modular, Repeatable"
+- **Rule**: No method shall exceed **30 lines of code**. If it does, refactor into helper methods.
+- **Rule**: No "God Classes". One class, one responsibility.
+- **Rule**: No massive `switch` statements. Use Dictionary dispatch or Polymorphism.
+
+### 7.2 Security First
+- **Input Validation**: NEVER trust `args` from Streamer.bot blindly. Validate and sanitize immediately upon ingestion.
+- **State Isolation**: Consumers should not share mutable state. Pass data via immutable structs.
+
+### 7.3 Negative Design Patterns
+- **Avoid**: Deep nesting (Arrow Code). Return early.
+- **Avoid**: Global state modification from deep within consumers.
+- **Avoid**: "Magic Strings". Use constants or `nameof()`.
