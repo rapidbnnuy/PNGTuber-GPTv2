@@ -1,5 +1,11 @@
 # PNGTuber-GPTv2 Coding Bible
 
+> **STOP**. Before writing code, READ:
+> 1. [Architecture Design](ARCHITECTURE_DESIGN.md) (The Vision)
+> 2. [AI System Context](AI_SYSTEM_CONTEXT.md) (The Rules)
+> 3. [Logging Rules](logging_rules.md) (The Standards)
+
+This document is the **Law**. Deviations will cause build failures and runtime crashes in the Streamer.bot environment.
 This document serves as the single source of truth for all architectural decisions, coding standards, and project patterns. It is designed to be read by both human developers and AI agents to ensure consistency, reliability, and maintainability.
 
 ## 1. Architectural Constraints & Tech Stack
