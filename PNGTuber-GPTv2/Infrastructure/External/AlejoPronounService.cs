@@ -45,9 +45,9 @@ namespace PNGTuber_GPTv2.Infrastructure.External
                 // "sheher" -> She/Her
                 // "theythem" -> They/Them
                 
-                if (json.Contains("\"pronoun_id\":\"hehim\"")) return new Pronouns("He/Him", "He", "Him", "His", "His");
-                if (json.Contains("\"pronoun_id\":\"sheher\"")) return new Pronouns("She/Her", "She", "Her", "Her", "Hers");
-                if (json.Contains("\"pronoun_id\":\"theythem\"")) return new Pronouns("They/Them", "They", "Them", "Their", "Theirs");
+                if (json.Contains("\"pronoun_id\":\"hehim\"")) return Pronouns.HeHim;
+                if (json.Contains("\"pronoun_id\":\"sheher\"")) return Pronouns.SheHer;
+                if (json.Contains("\"pronoun_id\":\"theythem\"")) return Pronouns.TheyThem;
                 if (json.Contains("\"pronoun_id\":\"other\"")) return Pronouns.TheyThem; // Fallback safe
                 
                 return null; // None found

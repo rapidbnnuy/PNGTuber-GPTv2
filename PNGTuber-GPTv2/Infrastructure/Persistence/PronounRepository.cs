@@ -58,7 +58,11 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                                     doc["Subject"].AsString,
                                     doc["Object"].AsString,
                                     doc["Possessive"].AsString,
-                                    doc["PossessivePronoun"].AsString
+                                    doc["PossessivePronoun"].AsString,
+                                    doc["Reflexive"].AsString,
+                                    doc["PastTense"].AsString,
+                                    doc["CurrentTense"].AsString,
+                                    doc["Plural"].AsBoolean
                                 );
                                 
                                 // Check Freshness (7 days)
@@ -115,6 +119,10 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                                 ["Object"] = finalPronouns.Object,
                                 ["Possessive"] = finalPronouns.Possessive,
                                 ["PossessivePronoun"] = finalPronouns.PossessivePronoun,
+                                ["Reflexive"] = finalPronouns.Reflexive,
+                                ["PastTense"] = finalPronouns.PastTense,
+                                ["CurrentTense"] = finalPronouns.CurrentTense,
+                                ["Plural"] = finalPronouns.Plural,
                                 ["LastUpdated"] = DateTime.UtcNow
                             };
 
