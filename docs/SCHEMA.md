@@ -46,19 +46,27 @@ Normalized storage for complex pronoun grammar.
 - **`Plural`** (Bool): False
 *Note: We do not store "Lower" variants. We compute `.ToLowerInvariant()` at runtime.*
 
-- **`Plural`** (Bool): False
-*Note: We do not store "Lower" variants. We compute `.ToLowerInvariant()` at runtime.*
-
 #### `user_pronouns` Collection
 Mapping table linking Users to Pronouns.
 - **`_id`** (ObjectId): Internal ID.
 - **`UserId`** (String): Reference to `users._id`.
 - **`PronounId`** (Int): Reference to `pronouns._id`.
+- **`LastUpdated`** (DateTime): When this record was last verified.
 
 ### 2.4 "Pronoun-First" Caching Strategy
 **Critical Design Requirement**: We respect identity above all else.
-- **Source of Truth**: The `user_pronouns` DB collection.
-- **Runtime Access**: **NEVER** query the DB for pronouns on every message.
+- **Source of Truth Hierarchy**:
+  1. **L1 (Memory)**: `ConcurrentDictionary`. Fastest. Valid for Session.
+  2. **L2 (LiteDB)**: `user_pronouns`. Persisted. Valid for **7 Days** (TTL).
+  3. **L3 (API)**: Twitch/Alejo. The authoritative source. Only queried if L2 is expired/missing.
+
+- **Drift Prevention (Stampede Protection)**:
+  - When a pronoun is needed and missing from L1:
+  - **Lock** on the `UserId`.
+  - Check L1 again (Double-Check Locking).
+  - If still missing, Fetch from L2.
+  - If L2 is stale (older than 7 days), queue a **Background API Refresh**, but return the Stale L2 data immediately to unblock the chat.
+
 - **Cache Layer**: A `ConcurrentDictionary<string, PronounStruct>` MUST be maintained in memory.
   - **Read**: Always read from Cache.
   - **Write**: Update DB -> Update Cache.
@@ -70,13 +78,13 @@ Specific facts the bot "knows" about a user. Overwrite-only logic.
 - **`Memory`** (String): The knowledge content. **Limit: 500 chars**.
 - **`LastUpdated`** (DateTime)
 
-### 2.5 Glossary (`keywords`)
+### 2.6 Glossary (`keywords`)
 Definitions for specific terms.
 - **`_id`** (String): The Keyword (Normalized/Lowercase).
 - **`Definition`** (String): The explanation. **Limit: 500 chars**.
 - **`CreatedBy`** (String): UserId ref.
 
-### 2.6 Event Log (`events`)
+### 2.7 Event Log (`events`)
 Immutable log of inbound triggers.
 - **`_id`** (ObjectId): Time-sortable.
 - **`Type`** (Enum): `ChatMessage`, `Follow`, `Cheer`, etc.
@@ -85,7 +93,7 @@ Immutable log of inbound triggers.
   - **CRITICAL**: The Payload MUST be stripped of all redundant data (e.g., Pronouns, UserBadges, SubStatus) that is already tracked in the `users` or `user_pronouns` tables.
 - **`Timestamp`** (DateTime)
 
-### 2.7 Interactions (`interactions`)
+### 2.8 Interactions (`interactions`)
 Log of Q&A exchanges.
 - **`_id`** (ObjectId)
 - **`UserId`** (String): Ref to `users._id`.

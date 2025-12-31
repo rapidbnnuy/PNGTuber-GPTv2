@@ -193,6 +193,14 @@ Although LiteDB is a Document Store, we enforce a **Relational Schema**.
   2. If missing, fetch from LiteDB + Insert into Dict.
   3. If Write, Update LiteDB + Update Dict.
 
-### 11.2 Pronoun Stability
+### 11.2 Pronoun Stability & TTL
 - **Constraint**: Pronouns are immutable for the duration of a session unless explicitly updated via command.
 - **Reasoning**: We prioritize correctness and speed. DB Latency on pronouns is unacceptable.
+- **Resolution Strategy**:
+  - **Always** returns `Pronouns` struct. Never null.
+  - If `L1` (Cache) Hit: Return immediately.
+  - If `L1` Miss: Fetch `L2` (DB).
+    - If `L2` exists: Populate `L1`. Return.
+      - *Async Check*: If `L2.LastUpdated` > 7 Days, trigger background API fetch.
+    - If `L2` missing: Return `Default` (They/Them) AND trigger background API fetch to self-heal.
+- **Consistency**: All consumers receive the `Pronouns` struct as part of the normalized event. They do NOT look it up themselves.
