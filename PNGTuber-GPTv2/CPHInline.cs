@@ -18,7 +18,6 @@ namespace PNGTuber_GPTv2
     {
         public IInlineInvokeProxy CPH { get; set; }
 
-        // Singleton Instances (Static to persist across Execute calls)
         private static Brain _brain;
         private static ILogger _logger;
         private static ICacheService _cache;
@@ -29,10 +28,7 @@ namespace PNGTuber_GPTv2
         {
             lock (_lock)
             {
-                if (_brain == null)
-                {
-                    Bootstrap();
-                }
+                if (_brain == null) Bootstrap();
             }
 
             if (_brain == null) return false;
@@ -43,16 +39,11 @@ namespace PNGTuber_GPTv2
             TryAddVar(eventArgs, "userName");
             TryAddVar(eventArgs, "userId"); 
             TryAddVar(eventArgs, "display_name");
-            
             TryAddVar(eventArgs, "message");
             TryAddVar(eventArgs, "rawInput");
             TryAddVar(eventArgs, "command");
 
-            try 
-            {
-                eventArgs["timestamp"] = DateTime.UtcNow;
-            } 
-            catch { }
+            try { eventArgs["timestamp"] = DateTime.UtcNow; } catch { }
 
             _brain.Ingest(eventArgs);
             return true;
@@ -62,10 +53,7 @@ namespace PNGTuber_GPTv2
         {
             try 
             {
-                if (CPH.TryGetArg<object>(key, out var val))
-                {
-                    dict[key] = val;
-                }
+                if (CPH.TryGetArg<object>(key, out var val)) dict[key] = val;
             }
             catch {}
         }
@@ -74,34 +62,12 @@ namespace PNGTuber_GPTv2
         {
             try
             {
-                string dbPathRaw = CPH.GetGlobalVar<string>("Database Path", true);
-                string pluginDir = Bootstrapper.Initialize(dbPathRaw);
-                string dbFile = Path.Combine(pluginDir, "pngtuber.db");
-                
-                string logLevelStr = CPH.GetGlobalVar<string>("Logging Level", true) ?? "INFO";
-                if (!Enum.TryParse(logLevelStr, true, out PNGTuber_GPTv2.Domain.Enums.LogLevel level))
-                    level = PNGTuber_GPTv2.Domain.Enums.LogLevel.Info;
-
-                _logger = new FileLogger(dbPathRaw, level);
+                var (pluginDir, dbFile) = InitializePaths();
                 _logger.Info("Bootstrapping PNGTuber-GPTv2 Brain...");
 
-                var dbBoot = new DatabaseBootstrapper(pluginDir, _logger);
-                dbBoot.Initialize();
-                dbBoot.PruneLockFile(); 
-
-                _cache = new MemoryCacheService(_logger);
-                var pronounApi = new AlejoPronounService(_logger);
-                var pronounRepo = new PronounRepository(_cache, _logger, pronounApi, dbFile);
-                var nickRepo = new NicknameRepository(_cache, _logger, dbFile);
-
-                var steps = new List<IPipelineStep>
-                {
-                    new IdentityStep(_cache, pronounRepo, nickRepo, _logger)
-                };
-
-                _brain = new Brain(_logger, _cache, steps);
-                _globalCts = new CancellationTokenSource();
-                _brain.StartProcessing(_globalCts.Token);
+                InitializeDatabase(pluginDir);
+                InitializeServices(dbFile);
+                StartBrain();
 
                 _logger.Info("Brain Online. Pipeline Ready.");
             }
@@ -111,8 +77,48 @@ namespace PNGTuber_GPTv2
                 _brain = null;
             }
         }
+
+        private (string dir, string list) InitializePaths()
+        {
+            string dbPathRaw = CPH.GetGlobalVar<string>("Database Path", true);
+            string pluginDir = Bootstrapper.Initialize(dbPathRaw);
+            
+            string logLevelStr = CPH.GetGlobalVar<string>("Logging Level", true) ?? "INFO";
+            if (!Enum.TryParse(logLevelStr, true, out PNGTuber_GPTv2.Domain.Enums.LogLevel level))
+                level = PNGTuber_GPTv2.Domain.Enums.LogLevel.Info;
+
+            _logger = new FileLogger(dbPathRaw, level);
+            return (pluginDir, Path.Combine(pluginDir, "pngtuber.db"));
+        }
+
+        private void InitializeDatabase(string pluginDir)
+        {
+            var dbBoot = new DatabaseBootstrapper(pluginDir, _logger);
+            dbBoot.Initialize();
+            dbBoot.PruneLockFile(); 
+        }
+
+        private void InitializeServices(string dbFile)
+        {
+            _cache = new MemoryCacheService(_logger);
+            var pronounApi = new AlejoPronounService(_logger);
+            var pronounRepo = new PronounRepository(_cache, _logger, pronounApi, dbFile);
+            var nickRepo = new NicknameRepository(_cache, _logger, dbFile);
+
+            var steps = new List<IPipelineStep>
+            {
+                new IdentityStep(_cache, pronounRepo, nickRepo, _logger)
+            };
+            
+            _brain = new Brain(_logger, _cache, steps);
+        }
+
+        private void StartBrain()
+        {
+            _globalCts = new CancellationTokenSource();
+            _brain.StartProcessing(_globalCts.Token);
+        }
         
-        // Helper to stop if needed (Trigger via separate Action)
         public bool Shutdown()
         {
              lock (_lock)
