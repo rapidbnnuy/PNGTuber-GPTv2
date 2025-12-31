@@ -140,3 +140,19 @@ Since we are on .NET Framework 4.8.1, we lack full C# 8.0+ Nullable Reference Ty
 - **Pattern**: Push "Side Effects" (I/O, DB, CPH calls) to the edges of the system (the Micro-Consumers).
 - **Core Logic**: The "Decision Engine" code should be **Pure**. It takes a Struct (State) and returns a Struct (Decision). It does not read from disk, it does not check the clock. It calculates.
 - **Immutability**: Prefer `readonly struct` for all data passing. If you can't change it, you can't break it.
+
+## 9. Simplicity & Complexity (The K.I.S.S. Principle)
+
+### 9.1 Algorithmic Complexity
+- **Rule**: **O(n) or Better**. 
+  - Avoid nested loops (O(n^2)) on data sets that can grow. 
+  - Use `HashSet<T>` (O(1)) for lookups instead of `List<T>.Contains` (O(n)).
+- **Rule**: **No Premature Optimization**, but **No Intentional Slowdowns**. 
+  - Don't write unreadable bitwise ops to save 1ms. 
+  - DO use the correct data structure from the start.
+
+### 9.2 Code Simplicity
+- **Philosophy**: The best code is the code that isn't written.
+- **Rule**: **Flat is better than Nested**.
+- **Rule**: **Explicit is better than Implicit**.
+- **Constraint**: If an AI cannot understand the method in 1 pass, it is too complex. Refactor.
