@@ -37,25 +37,19 @@ namespace PNGTuber_GPTv2
 
             if (_brain == null) return false;
 
-            // Extract Context from Streamer.bot
-            // We manually map known variables since we can't get the raw 'args' dict easily in DLL
             var eventArgs = new Dictionary<string, object>();
             
-            // Common User Vars
             TryAddVar(eventArgs, "user");
             TryAddVar(eventArgs, "userName");
-            TryAddVar(eventArgs, "userId"); // twitchId
+            TryAddVar(eventArgs, "userId"); 
             TryAddVar(eventArgs, "display_name");
             
-            // Chat Vars
             TryAddVar(eventArgs, "message");
             TryAddVar(eventArgs, "rawInput");
             TryAddVar(eventArgs, "command");
 
-            // Event Metadata
             try 
             {
-                // Retrieve Event Source if possible, otherwise default
                 eventArgs["timestamp"] = DateTime.UtcNow;
             } 
             catch { }
@@ -66,13 +60,6 @@ namespace PNGTuber_GPTv2
 
         private void TryAddVar(Dictionary<string, object> dict, string key)
         {
-            // CPH.GetGlobalVar is for Globals. For Check vars (local args), we use GetVar usually?
-            // In DLL Interface, 'GetVar' isn't always exposed same as CPH script.
-            // Using TryGetArg which is typical for Actions.
-            
-            // Note: The interface provided might differ slightly based on version.
-            // Assuming we can't easily get local args without TryGetArg.
-            // If the binding misses, we wrap safely.
             try 
             {
                 if (CPH.TryGetArg<object>(key, out var val))
@@ -87,7 +74,6 @@ namespace PNGTuber_GPTv2
         {
             try
             {
-                // 1. Config & Paths
                 string dbPathRaw = CPH.GetGlobalVar<string>("Database Path", true);
                 string pluginDir = Bootstrapper.Initialize(dbPathRaw);
                 string dbFile = Path.Combine(pluginDir, "pngtuber.db");
@@ -96,29 +82,23 @@ namespace PNGTuber_GPTv2
                 if (!Enum.TryParse(logLevelStr, true, out PNGTuber_GPTv2.Domain.Enums.LogLevel level))
                     level = PNGTuber_GPTv2.Domain.Enums.LogLevel.Info;
 
-                // 2. Logger
                 _logger = new FileLogger(dbPathRaw, level);
                 _logger.Info("Bootstrapping PNGTuber-GPTv2 Brain...");
 
-                // 3. Database Init
                 var dbBoot = new DatabaseBootstrapper(pluginDir, _logger);
                 dbBoot.Initialize();
-                dbBoot.PruneLockFile(); // Recovery on startup
+                dbBoot.PruneLockFile(); 
 
-                // 4. Services
                 _cache = new MemoryCacheService(_logger);
                 var pronounApi = new AlejoPronounService(_logger);
                 var pronounRepo = new PronounRepository(_cache, _logger, pronounApi, dbFile);
                 var nickRepo = new NicknameRepository(_cache, _logger, dbFile);
 
-                // 5. Build Pipeline Steps
                 var steps = new List<IPipelineStep>
                 {
                     new IdentityStep(_cache, pronounRepo, nickRepo, _logger)
-                    // Future: ModerationStep, LogicStep, etc.
                 };
 
-                // 6. Start Brain
                 _brain = new Brain(_logger, _cache, steps);
                 _globalCts = new CancellationTokenSource();
                 _brain.StartProcessing(_globalCts.Token);
@@ -127,9 +107,7 @@ namespace PNGTuber_GPTv2
             }
             catch (Exception ex)
             {
-                // If logger exists, log it. Else... we are blind.
                 if (_logger != null) _logger.Error($"Bootstrap Failed: {ex}");
-                // Reset so we can try again next time
                 _brain = null;
             }
         }

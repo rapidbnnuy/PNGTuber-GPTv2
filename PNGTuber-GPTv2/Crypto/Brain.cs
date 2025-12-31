@@ -14,7 +14,6 @@ namespace PNGTuber_GPTv2.Crypto
         private readonly ICacheService _cache;
         private readonly List<IPipelineStep> _steps;
         
-        // The Queue holds Context IDs, not full objects.
         private readonly Channel<string> _processingQueue;
 
         public Brain(ILogger logger, ICacheService cache, IEnumerable<IPipelineStep> steps)
@@ -23,7 +22,6 @@ namespace PNGTuber_GPTv2.Crypto
             _cache = cache;
             _steps = new List<IPipelineStep>(steps);
             
-            // Unbounded queue for high throughput
             _processingQueue = Channel.CreateUnbounded<string>();
         }
 
@@ -32,21 +30,17 @@ namespace PNGTuber_GPTv2.Crypto
             Task.Run(async () => await ProcessQueueAsync(ct), ct);
         }
 
-        // 1. Ingestion Point (Main Thread)
         public void Ingest(Dictionary<string, object> args)
         {
             try
             {
-                // Create Context
                 var context = new RequestContext
                 {
                     RawArgs = args
                 };
 
-                // Save to Cache
                 _cache.Set($"req_{context.RequestId}", context, TimeSpan.FromMinutes(10));
 
-                // Push ID to Queue
                 _processingQueue.Writer.TryWrite(context.RequestId);
                 
                 _logger.Debug($"[Brain] Ingested Request {context.RequestId}");
@@ -57,7 +51,6 @@ namespace PNGTuber_GPTv2.Crypto
             }
         }
 
-        // 2. Processing Loop (Background Thread)
         private async Task ProcessQueueAsync(CancellationToken ct)
         {
             _logger.Info("[Brain] Pipeline Processor Started.");
@@ -82,10 +75,9 @@ namespace PNGTuber_GPTv2.Crypto
             }
         }
 
-        // 3. Sequential Execution (The Pipeline)
         private async Task RunPipelineAsync(string contextId, CancellationToken ct)
         {
-            using (var stepScope = new CancellationTokenSource(TimeSpan.FromSeconds(60))) // Hard timeout per request
+            using (var stepScope = new CancellationTokenSource(TimeSpan.FromSeconds(60))) 
             {
                 var combinedCt = CancellationTokenSource.CreateLinkedTokenSource(ct, stepScope.Token).Token;
 
@@ -95,7 +87,6 @@ namespace PNGTuber_GPTv2.Crypto
                     {
                         if (combinedCt.IsCancellationRequested) break;
 
-                        // Execute Step (Step is responsible for Fetch/Mutate/Save)
                         await step.ExecuteAsync(contextId, combinedCt);
                     }
                 }

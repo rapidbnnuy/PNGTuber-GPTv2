@@ -12,19 +12,15 @@ namespace PNGTuber_GPTv2.Domain.DTOs
         public string RequestId { get; set; }
         public DateTime CreatedAt { get; set; }
         
-        // Input Args (Raw)
         public Dictionary<string, object> RawArgs { get; set; }
 
-        // Resolved Identity
         public User User { get; set; }
         public Pronouns Pronouns { get; set; }
 
-        // Chat State
         public string CleanedMessage { get; set; }
         public bool IsModerationFlagged { get; set; }
         public string ModerationReason { get; set; }
 
-        // Output
         public string GeneratedResponse { get; set; }
 
         public RequestContext()

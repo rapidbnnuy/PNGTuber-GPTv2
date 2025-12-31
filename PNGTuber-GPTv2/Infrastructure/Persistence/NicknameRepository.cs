@@ -22,14 +22,12 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
 
         public Task<string> GetNicknameAsync(string userId, CancellationToken ct)
         {
-            // 1. L1 Cache
             var cacheKey = $"nick_{userId}";
             if (_cache.Exists(cacheKey))
             {
                 return Task.FromResult(_cache.Get<string>(cacheKey));
             }
 
-            // 2. L2 Database
             string nickname = null;
 
             using (var mutex = new DatabaseMutex(_logger))
@@ -56,9 +54,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                 }
             }
 
-            // Update Cache (even if null, to avoid DB spam? strict null vs "no nickname" difference matters?)
-            // For now, if null, we don't cache "null" unless we define a "NoNickname" constant.
-            // Let's cache the result regardless to save DB hits.
             if (nickname != null)
             {
                 _cache.Set(cacheKey, nickname, TimeSpan.FromMinutes(30));
@@ -69,7 +64,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
 
         public Task SetNicknameAsync(string userId, string nickname, CancellationToken ct)
         {
-            // 1. DB Write
             using (var mutex = new DatabaseMutex(_logger))
             {
                 if (mutex.Acquire(TimeSpan.FromSeconds(2)))
@@ -80,7 +74,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                         {
                             var col = db.GetCollection<BsonDocument>("user_nicknames");
                             
-                            // Supports multi-word because it's just a string value
                             var doc = new BsonDocument
                             {
                                 ["UserId"] = userId,
@@ -99,7 +92,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                 }
             }
 
-            // 2. Cache Update
             var cacheKey = $"nick_{userId}";
             _cache.Set(cacheKey, nickname, TimeSpan.FromMinutes(30));
 

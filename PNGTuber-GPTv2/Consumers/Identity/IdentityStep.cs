@@ -35,25 +35,21 @@ namespace PNGTuber_GPTv2.Consumers.Identity
 
             try
             {
-                // 1. Resolve User ID & Name from Args
                 if (context.RawArgs.TryGetValue("userId", out var uidObj) && 
                     context.RawArgs.TryGetValue("user", out var nameObj))
                 {
                     var userId = uidObj.ToString();
                     var displayName = nameObj.ToString();
 
-                    // 2. Resolve Pronouns (Cache -> DB -> API)
                     var pronouns = await _pronouns.GetPronounsAsync(userId, displayName, ct);
 
-                    // 3. Resolve Nickname (Cache -> DB)
                     string nickname = await _nicknames.GetNicknameAsync(userId, ct);
 
-                    // 4. Update Context
                     context.User = new User 
                     { 
                         Id = userId,
                         DisplayName = displayName,
-                        Nickname = nickname, // Can be null
+                        Nickname = nickname, 
                         FirstSeen = DateTime.UtcNow 
                     };
                     context.Pronouns = pronouns;
@@ -65,7 +61,6 @@ namespace PNGTuber_GPTv2.Consumers.Identity
                     _logger.Debug("[IdentityStep] No user info in args. Skipping identity.");
                 }
 
-                // 5. Save Enriched Context
                 _cache.Set(key, context, TimeSpan.FromMinutes(10));
             }
             catch (Exception ex)

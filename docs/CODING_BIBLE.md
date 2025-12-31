@@ -157,10 +157,12 @@ Since we are on .NET Framework 4.8.1, we lack full C# 8.0+ Nullable Reference Ty
   - Don't write unreadable bitwise ops to save 1ms. 
   - DO use the correct data structure from the start.
 
-### 9.2 Code Simplicity
-- **Philosophy**: The best code is the code that isn't written.
+### 9.2 Code Simplicity (The "No Comments" Rule)
+- **Philosophy**: If you need a comment to explain the code, the code is too complex. Refactor it.
+- **Rule**: **NO COMMENTS ALLOWED**. Code must be self-documenting via descriptive naming.
+- **Exception**: Javadoc/XML summary tags on public APIs *only if mandatory* for Intellisense (Prefer generic names).
+- **Process**: Documentation belongs in `docs/`, not in `.cs` files.
 - **Rule**: **Flat is better than Nested**.
-- **Rule**: **Explicit is better than Implicit**.
 - **Rule**: **Explicit is better than Implicit**.
 - **Constraint**: If an AI cannot understand the method in 1 pass, it is too complex. Refactor.
 
