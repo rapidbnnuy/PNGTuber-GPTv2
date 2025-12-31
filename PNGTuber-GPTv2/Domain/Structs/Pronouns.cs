@@ -15,6 +15,18 @@ namespace PNGTuber_GPTv2.Domain.Structs
         public string CurrentTense { get; }  // Is
         public bool Plural { get; }
 
+        // --- Computed Properties for Streamer.bot Parity ---
+        public string SubjectLower => Subject.ToLowerInvariant();
+        public string ObjectLower => Object.ToLowerInvariant();
+        public string PossessiveLower => Possessive.ToLowerInvariant(); // "their"
+        public string PossessivePronounLower => PossessivePronoun.ToLowerInvariant(); // "theirs"
+        public string ReflexiveLower => Reflexive.ToLowerInvariant();
+        public string PastTenseLower => PastTense.ToLowerInvariant();
+        public string CurrentTenseLower => CurrentTense.ToLowerInvariant();
+        
+        // "pronouns" variable usually has parens in SB
+        public string DisplayWithParens => $"({Display})";
+
         public Pronouns(string display, string subject, string obj, string possessive, string possessivePronoun, string reflexive, string pastTense, string currentTense, bool plural)
         {
             Display = display;
