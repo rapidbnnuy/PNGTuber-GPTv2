@@ -6,8 +6,10 @@ Your primary directive is to follow the **Architecture, Standards, and Constrain
 1. **READ** `docs/CODING_BIBLE.md` before writing a single line of code.
 2. **ENFORCE** the ".NET Framework 4.8.1" constraint. Do NOT use .NET Core/5+ APIs.
 3. **ENFORCE** the "30 Lines of Code" limit per method. Refactor immediately if you exceed it.
-4. **ENFORCE** "Log All The Things". Every workflow must have Verbose/Info logs.
-5. **ENFORCE** strict Null Safety (Guard Clauses) and mathematical purity.
+4. **ENFORCE** strict Null Safety (Guard Clauses) and mathematical purity.
+- **Logging**: Strict adherence to `docs/logging_rules.md`. Debug=Firehose, Info=Summary, Error=Failure. NO TRACE.
+- **Database**: LiteDB for persistence. Models in `Domain/Entities`.
+- **Publisher/Consumer**: Use `IEventPublisher` and `IConsumer<T>`.
 
 ## CONTEXT
 - This project uses **LiteDB** for persistence.
