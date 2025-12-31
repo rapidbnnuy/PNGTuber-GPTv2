@@ -155,4 +155,31 @@ Since we are on .NET Framework 4.8.1, we lack full C# 8.0+ Nullable Reference Ty
 - **Philosophy**: The best code is the code that isn't written.
 - **Rule**: **Flat is better than Nested**.
 - **Rule**: **Explicit is better than Implicit**.
+- **Rule**: **Explicit is better than Implicit**.
 - **Constraint**: If an AI cannot understand the method in 1 pass, it is too complex. Refactor.
+
+## 10. Data Schema Standards (Relational LiteDB)
+
+### 10.1 The Reference Pattern
+Although LiteDB is a Document Store, we enforce a **Relational Schema**.
+- **Rule**: **Zero Duplication**. Do NOT store full Entity objects inside other objects.
+- **Rule**: **Use References**. Store the **ID** of the related entity.
+  - *Bad*: `public User Sender { get; set; }` inside `ChatMessage`.
+  - *Good*: `public string UserId { get; set; }` inside `ChatMessage`.
+
+### 10.2 Core Collections Strategy
+- **`users` Collection**:
+  - **Id**: `string` (Platform Unique ID, e.g., `twitch:12345`).
+  - **Content**: Profile data only (Pronouns, Karma, FirstSeen).
+  - **Single Source of Truth**: This is the ONLY place user data lives.
+- **`events` Collection**:
+  - **Id**: `ObjectId` (Time-sortable, auto-generated).
+  - **Content**: The immutable record of what happened.
+  - **Refs**: `UserId` pointing to `users`.
+- **`state` Collection**:
+  - **Id**: `string` (Key, e.g., `stream_context`).
+  - **Content**: Current runtime state (e.g., `ActiveUserIds`).
+
+### 10.3 Id Standards
+- **External Entities (Users, Streamers)**: Use String IDs formatted as `platform:id` to prevent collisions.
+- **Internal Entities (Logs, Events)**: Use `ObjectId` or `int` (AutoId).
