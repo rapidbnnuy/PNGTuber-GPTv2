@@ -14,6 +14,9 @@ namespace PNGTuber_GPTv2.Domain.DTOs
         
         public Dictionary<string, object> RawArgs { get; set; }
 
+        public string EventType { get; set; } // "Chat", "Command", "Raid"
+        public string CommandId { get; set; } // If Command
+
         public User User { get; set; }
         public Pronouns Pronouns { get; set; }
 

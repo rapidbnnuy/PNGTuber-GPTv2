@@ -11,6 +11,7 @@ using PNGTuber_GPTv2.Infrastructure.FileSystem;
 using PNGTuber_GPTv2.Infrastructure.Logging;
 using PNGTuber_GPTv2.Infrastructure.Persistence;
 using PNGTuber_GPTv2.Consumers.Identity;
+using PNGTuber_GPTv2.Consumers.Command;
 
 namespace PNGTuber_GPTv2
 {
@@ -35,13 +36,16 @@ namespace PNGTuber_GPTv2
 
             var eventArgs = new Dictionary<string, object>();
             
+            TryAddVar(eventArgs, "commandId");
+            TryAddVar(eventArgs, "command");
+            TryAddVar(eventArgs, "triggerType"); // "Command", "TwitchChatMessage" etc
+            
             TryAddVar(eventArgs, "user");
             TryAddVar(eventArgs, "userName");
             TryAddVar(eventArgs, "userId"); 
             TryAddVar(eventArgs, "display_name");
             TryAddVar(eventArgs, "message");
             TryAddVar(eventArgs, "rawInput");
-            TryAddVar(eventArgs, "command");
 
             try { eventArgs["timestamp"] = DateTime.UtcNow; } catch { }
 
@@ -107,7 +111,8 @@ namespace PNGTuber_GPTv2
 
             var steps = new List<IPipelineStep>
             {
-                new IdentityStep(_cache, pronounRepo, nickRepo, _logger)
+                new IdentityStep(_cache, pronounRepo, nickRepo, _logger),
+                new CommandStep(_cache, nickRepo, _logger)
             };
             
             _brain = new Brain(_logger, _cache, steps);

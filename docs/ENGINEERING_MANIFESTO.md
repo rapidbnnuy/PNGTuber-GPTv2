@@ -33,21 +33,22 @@
 ## 2. THE ARCHITECTURE: "Sequential Enrichment Pipeline"
 
 We do not write "Event Handlers". We write **Pipelines**.
-Traditional bots crash because they try to do 10 things at once inside `OnMessage`. We do **one** thing at a time.
+Traditional bots crash because they try to do 10 things at once inside `OnMessage`. We do **one** day at a time.
 
-### 2.1 The Flow
-1.  **Ingestion ("The Brain")**:
-    *   Accepts `Dictionary<string, object>` from Streamer.bot.
-    *   Converts it to a `RequestContext`.
-    *   Queues it. **RETURNS IMMEDIATELY**.
-    *   *Result*: The UI never freezes.
+### 2.1 The Flow ("ProcessEvents" Pattern)
+1.  **Ingestion ("The Coordinator")**:
+    *   **Single Entry Point**: All Streamer.bot Actions (Chat, Commands, Raids) point to ONE C# Action: `ProcessEvents`.
+    *   **Classification**: The Coordinator reads `triggerType`, `commandId`, etc. to determine the **Event Type**.
+    *   **Extraction**: Pulls 60+ variables from SB Args into a `RequestContext`.
+    *   **Queueing**: Pushes to `Channel<string>`. **RETURNS IMMEDIATELY**.
 2.  **Processing (Background Thread)**:
     *   Picks up `RequestContext`.
     *   Runs through `IPipelineStep`s sequentially.
-    *   **IdentityStep** -> **ModerationStep** -> **LogicStep** -> **CommandStep**.
-3.  **Execution ("The Sink")**:
-    *   Writes to DB (Lock acquired).
-    *   Outputs to Chat.
+    *   **IdentityStep** (Who?) -> **LogicStep** (What?) -> **EnrichmentStep** (Format) -> **OutputStep**.
+3.  **Enrichment ("The Context")**:
+    *   We do not pass raw strings. We pass a hydrated `RequestContext`.
+    *   **Formatted Message**: "He/Him [Nick]: Hello world" is generated for the AI.
+    *   **KV Cache**: All resolved data is cached for instant retrieval.
 
 ### 2.2 The "Three Rings" of Defense
 We assume everything will fail. We code for survival.

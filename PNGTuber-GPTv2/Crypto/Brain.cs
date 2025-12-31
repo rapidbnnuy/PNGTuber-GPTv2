@@ -36,14 +36,30 @@ namespace PNGTuber_GPTv2.Crypto
             {
                 var context = new RequestContext
                 {
-                    RawArgs = args
+                    RawArgs = args,
+                    RequestId = Guid.NewGuid().ToString("N"),
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                _cache.Set($"req_{context.RequestId}", context, TimeSpan.FromMinutes(10));
+                // Coordinator Logic: Determine Type
+                if (args.TryGetValue("commandId", out var cmdId))
+                {
+                    context.EventType = "Command";
+                    context.CommandId = cmdId.ToString();
+                }
+                else if (args.ContainsKey("message")) // Fallback if no commandId
+                {
+                    context.EventType = "Chat";
+                }
+                else
+                {
+                    context.EventType = "Unknown";
+                }
 
+                _cache.Set($"req_{context.RequestId}", context, TimeSpan.FromMinutes(10));
                 _processingQueue.Writer.TryWrite(context.RequestId);
                 
-                _logger.Debug($"[Brain] Ingested Request {context.RequestId}");
+                _logger.Debug($"[Brain] Ingested {context.EventType} ({context.RequestId})");
             }
             catch (Exception ex)
             {
