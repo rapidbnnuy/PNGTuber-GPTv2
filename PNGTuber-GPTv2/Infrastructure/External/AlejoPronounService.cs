@@ -7,7 +7,7 @@ using PNGTuber_GPTv2.Domain.Structs;
 
 namespace PNGTuber_GPTv2.Infrastructure.External
 {
-    public class AlejoPronounService : IPronounService
+    public class AlejoPronounService : IPronounService, IDisposable
     {
         private readonly HttpClient _http;
         private readonly ILogger _logger;
@@ -79,6 +79,10 @@ namespace PNGTuber_GPTv2.Infrastructure.External
             if (endIndex == -1) return null;
             
             return source.Substring(startIndex, endIndex - startIndex);
+        }
+        public void Dispose()
+        {
+            _http?.Dispose();
         }
     }
 }
