@@ -74,5 +74,27 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                 // We do not rethrow here to avoid crashing CPH, but the plugin is likely broken.
             }
         }
+        public void PruneLockFile()
+        {
+            try
+            {
+                var lockFilePath = $"{_dbPath}-lock";
+                
+                if (File.Exists(lockFilePath))
+                {
+                    _logger.Warn($"Found Database Lock File: {lockFilePath}. Attempting removal...");
+                    File.Delete(lockFilePath);
+                    _logger.Info("Database Lock File removed successfully.");
+                }
+                else
+                {
+                    _logger.Debug("No Database Lock File found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Failed to prune Database Lock File: {ex.Message}");
+            }
+        }
     }
 }

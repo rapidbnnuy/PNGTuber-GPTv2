@@ -74,7 +74,7 @@ namespace PNGTuber_GPTv2.Domain.Entities
                 ModerationRebukeEnabled = true,
                 MaxChatHistory = 20,
                 MaxPromptHistory = 10,
-                OpenAiModel = "gpt-3.5-turbo",
+                OpenAiModel = "gpt-4o",
                 // Initialize strings to empty to avoid strict null issues if needed, or keep null.
                 // Keeping nulls for now as they represent "not set".
             };
