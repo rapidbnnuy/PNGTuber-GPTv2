@@ -115,3 +115,28 @@ public async Task ProcessAsync(ChatMessage msg, CancellationToken ct) { ... }
 - **Avoid**: Deep nesting (Arrow Code). Return early.
 - **Avoid**: Global state modification from deep within consumers.
 - **Avoid**: "Magic Strings". Use constants or `nameof()`.
+
+## 8. Synchronization & Verification (Eliminating Bugs)
+
+### 8.1 Mutex vs. Semaphore
+- **SemaphoreSlim**: The standard for **Internal Async Locks**.
+  - *Use Case*: throttling access to a shared resource (like a specific List) within the *same* process.
+  - *Why*: It supports `await WaitAsync()`, preventing thread blocking.
+- **Mutex**: The standard for **Inter-Process Locks**.
+  - *Use Case*: Ensuring only ONE instance of a specific "Brain" runner is active across the entire user session, or coordinating with an external binary.
+  - *Constraint*: NEVER use `Mutex` inside a high-throughput async hot path. It is a kernel-level primitive and is heavy.
+
+### 8.2 Null Safety & The "Billion Dollar Mistake"
+Since we are on .NET Framework 4.8.1, we lack full C# 8.0+ Nullable Reference Type guarantees at runtime. We must code defensively.
+- **Rule**: **No Null Returns**. Return `Option<T>`, `TryResult<T>`, or ensure the return type is a valid empty object (Null Object Pattern).
+- **Rule**: **Guard Clauses Everywhere**. The first 5 lines of any public method should be validating inputs.
+  ```csharp
+  if (input == null) throw new ArgumentNullException(nameof(input));
+  ```
+- **Rule**: **Constructors Must Complete**. An object should never exist in a partially initialized state. If it exists, it is valid.
+
+### 8.3 Mathematical Certainty (Pure Functions)
+- **Goal**: Deterministic code. Input A always equals Output B.
+- **Pattern**: Push "Side Effects" (I/O, DB, CPH calls) to the edges of the system (the Micro-Consumers).
+- **Core Logic**: The "Decision Engine" code should be **Pure**. It takes a Struct (State) and returns a Struct (Decision). It does not read from disk, it does not check the clock. It calculates.
+- **Immutability**: Prefer `readonly struct` for all data passing. If you can't change it, you can't break it.
