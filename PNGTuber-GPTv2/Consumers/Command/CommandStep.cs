@@ -38,9 +38,9 @@ namespace PNGTuber_GPTv2.Consumers.Command
             _cache.Set(key, context, TimeSpan.FromMinutes(10));
         }
 
-        private async Task HandleNativeCommand(RequestContext ctx, CancellationToken ct)
+        private Task HandleNativeCommand(RequestContext ctx, CancellationToken ct)
         {
-
+            return Task.CompletedTask;
         }
 
         private async Task HandleTextCommand(RequestContext context, CancellationToken ct)
