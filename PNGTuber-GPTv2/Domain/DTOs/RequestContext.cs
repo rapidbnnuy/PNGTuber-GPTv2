@@ -13,6 +13,8 @@ namespace PNGTuber_GPTv2.Domain.DTOs
         
         public Dictionary<string, object> RawArgs { get; set; }
 
+        public List<string> Facts { get; set; } = new List<string>();
+        
         public string EventType { get; set; }
         public string CommandId { get; set; }
 

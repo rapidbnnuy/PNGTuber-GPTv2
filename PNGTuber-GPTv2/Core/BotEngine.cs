@@ -10,8 +10,11 @@ using PNGTuber_GPTv2.Infrastructure.External;
 using PNGTuber_GPTv2.Infrastructure.FileSystem;
 using PNGTuber_GPTv2.Infrastructure.Logging;
 using PNGTuber_GPTv2.Infrastructure.Persistence;
+using PNGTuber_GPTv2.Infrastructure.Services;
 using PNGTuber_GPTv2.Consumers.Identity;
 using PNGTuber_GPTv2.Consumers.Command;
+using PNGTuber_GPTv2.Consumers.Knowledge;
+using PNGTuber_GPTv2.Consumers.History;
 using PNGTuber_GPTv2.Domain.Enums;
 
 namespace PNGTuber_GPTv2.Core
@@ -99,11 +102,15 @@ namespace PNGTuber_GPTv2.Core
             var pronounApi = new AlejoPronounService(_logger);
             var pronounRepo = new PronounRepository(_cache, _logger, pronounApi, dbFile);
             var nickRepo = new NicknameRepository(_cache, _logger, dbFile);
+            var knowledgeRepo = new KnowledgeRepository(_cache, _logger, dbFile);
+            var historyService = new ChatHistoryService(_cache);
 
             var steps = new List<IPipelineStep>
             {
                 new IdentityStep(_cache, pronounRepo, nickRepo, _logger),
-                new CommandStep(_cache, nickRepo, _logger)
+                new KnowledgeStep(_cache, knowledgeRepo, _logger),
+                new CommandStep(_cache, nickRepo, knowledgeRepo, _logger),
+                new HistoryStep(_cache, historyService, _logger)
             };
             
             _brain = new Brain(_logger, _cache, steps);

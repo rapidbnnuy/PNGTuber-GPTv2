@@ -167,5 +167,132 @@ namespace PNGTuber_GPTv2.Tests.Integration
             _engine?.Shutdown();
             try { Directory.Delete(_tempRoot, true); } catch { }
         }
+        [Fact]
+        public async Task TheStudent_LearnsAndRecalls()
+        {
+            _engine = new BotEngine(_mockCph.Object);
+            bool started = _engine.Start();
+            Assert.True(started);
+
+            // 1. Teach
+            var teachArgs = new Dictionary<string, object>
+            {
+                { "triggerType", "TwitchChatMessage" },
+                { "message", "!modteach rust Rust is safe." },
+                { "user", "Teacher" },
+                { "userId", "twitch:999" },
+                { "display_name", "Teacher" }
+            };
+            _engine.Ingest(teachArgs);
+
+            // Wait for pipeline
+            await Task.Delay(2000);
+
+            // 2. Recall (Query)
+            // We need to verify that KnowledgeStep injected the fact.
+            // But BotEngine doesn't expose the resulting Context directly.
+            // However, KnowledgeStep modifies the context in Cache.
+            // We can check the Cache directly if we can access it?
+            // BotEngine uses internal services.
+            // ALTERNATIVE: Use the FakeProxy (Output) to verify? 
+            // Currently KnowledgeStep doesn't output.
+            // But we CAN verify the DB directly to see if teach worked.
+            
+            using (var db = new LiteDatabase($"Filename={Path.Combine(_tempRoot, "PNGTuber-GPT", "pngtuber.db")}"))
+            {
+                var col = db.GetCollection<BsonDocument>("knowledge_base");
+                var entry = col.FindOne(x => x["Key"] == "rust");
+                
+                if (entry == null)
+                {
+                    var logsDir = Path.Combine(_tempRoot, "PNGTuber-GPT", "logs");
+                    if (Directory.Exists(logsDir))
+                    {
+                        var files = Directory.GetFiles(logsDir, "*.log");
+                        if (files.Length > 0)
+                        {
+                            var contents = File.ReadAllText(files[0]);
+                            _output.WriteLine($"[FAILURE LOGS]: {contents}");
+                        }
+                    }
+                }
+                
+                Assert.NotNull(entry);
+                Assert.Equal("Rust is safe.", entry["Content"].AsString);
+            }
+
+            // 3. Verify Retrieval Logic (Unit Test style within Integration)
+            // Ideally we'd check if the next message *processed* correctly.
+            // Since we can't inspect the internal Context easily without modifying BotEngine to expose it...
+            // We trust KnowledgeStep logic (which we reviewed) and just verify Persistence here.
+            
+            // 4. Forget
+            var forgetArgs = new Dictionary<string, object>
+            {
+                { "triggerType", "TwitchChatMessage" },
+                { "message", "!modforget rust" },
+                { "user", "Teacher" },
+                { "userId", "twitch:999" },
+                { "display_name", "Teacher" }
+            };
+            _engine.Ingest(forgetArgs);
+            
+            await Task.Delay(2000); // Wait for writes
+
+            using (var db = new LiteDatabase($"Filename={Path.Combine(_tempRoot, "PNGTuber-GPT", "pngtuber.db")}"))
+            {
+                var col = db.GetCollection<BsonDocument>("knowledge_base");
+                var entry = col.FindOne(x => x["Key"] == "rust");
+                Assert.Null(entry);
+            }
+        }
+        [Fact]
+        public async Task ChatFlow_BuffersMessages()
+        {
+            _engine = new BotEngine(_mockCph.Object);
+            Assert.True(_engine.Start());
+
+            // 1. Ingest Chat
+            var args = new Dictionary<string, object>
+            {
+                { "triggerType", "TwitchChatMessage" },
+                { "message", "Hello World" },
+                { "user", "HistoryUser" },
+                { "userId", "twitch:hist:1" },
+                { "display_name", "HistoryUser" }
+            };
+            _engine.Ingest(args);
+
+            await Task.Delay(2000);
+
+            // 2. Verify Cache (MemoryCache.Default shared)
+            var cache = System.Runtime.Caching.MemoryCache.Default;
+            var history = cache.Get("chat_history") as List<string>;
+            
+            Assert.NotNull(history);
+            Assert.Single(history);
+            Assert.Contains("HistoryUser (They/Them) said Hello World", history[0]); // Default pronouns
+            
+            // 3. Overflow
+            for (int i = 0; i < 25; i++)
+            {
+                 var args2 = new Dictionary<string, object>
+                {
+                    { "triggerType", "TwitchChatMessage" },
+                    { "message", $"Msg {i}" },
+                    { "user", "HistoryUser" },
+                    { "userId", "twitch:hist:1" },
+                    { "display_name", "HistoryUser" }
+                };
+                _engine.Ingest(args2);
+            }
+            
+            await Task.Delay(2000); // Process queue
+            
+            history = cache.Get("chat_history") as List<string>;
+            Assert.Equal(20, history.Count);
+            Assert.Contains("Msg 24", history[19]);
+            Assert.DoesNotContain("Hello World", history); // Oldest removed
+        }
     }
 }

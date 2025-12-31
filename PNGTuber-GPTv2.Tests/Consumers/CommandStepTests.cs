@@ -14,6 +14,7 @@ namespace PNGTuber_GPTv2.Tests.Consumers
     {
         private readonly Mock<ICacheService> _mockCache;
         private readonly Mock<INicknameRepository> _mockNickRepo;
+        private readonly Mock<IKnowledgeRepository> _mockKnowledge;
         private readonly Mock<ILogger> _mockLogger;
         private readonly CommandStep _step;
 
@@ -21,8 +22,9 @@ namespace PNGTuber_GPTv2.Tests.Consumers
         {
             _mockCache = new Mock<ICacheService>();
             _mockNickRepo = new Mock<INicknameRepository>();
+            _mockKnowledge = new Mock<IKnowledgeRepository>();
             _mockLogger = new Mock<ILogger>();
-            _step = new CommandStep(_mockCache.Object, _mockNickRepo.Object, _mockLogger.Object);
+            _step = new CommandStep(_mockCache.Object, _mockNickRepo.Object, _mockKnowledge.Object, _mockLogger.Object);
         }
 
         [Fact]
