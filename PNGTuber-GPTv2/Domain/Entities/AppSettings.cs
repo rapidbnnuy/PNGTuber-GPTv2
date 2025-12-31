@@ -11,7 +11,6 @@ namespace PNGTuber_GPTv2.Domain.Entities
         public string OpenAiModel { get; set; }
         public string ModelInputCost { get; set; }
         public string ModelOutputCost { get; set; }
-        public string DatabasePath { get; set; }
         public string IgnoreBotUsernames { get; set; }
 
         public string CharacterVoiceAlias_1 { get; set; }
