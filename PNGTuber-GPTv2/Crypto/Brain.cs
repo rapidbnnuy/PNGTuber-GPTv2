@@ -42,6 +42,11 @@ namespace PNGTuber_GPTv2.Crypto
                 };
 
 
+                if (args.TryGetValue("message", out var msg) && msg != null)
+                {
+                    context.CleanedMessage = msg.ToString();
+                }
+
                 if (args.TryGetValue("commandId", out var cmdId))
                 {
                     context.EventType = "Command";
