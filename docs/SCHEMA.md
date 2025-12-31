@@ -100,6 +100,16 @@ Log of Q&A exchanges.
 - **`Input`** (String): The user's question/message.
 - **`Response`** (String): The bot's generated response.
 - **`ModelUsed`** (String): e.g., "GPT-4o".
+- **`Telemetry`** (Struct):
+  - **`TokensIn`** (Int): Prompt tokens.
+  - **`TokensOut`** (Int): Completion tokens.
+  - **`TotalTokens`** (Int).
+  - **`Cost`** (Double): Estimated cost in USD.
+  - **`ExecutionTimeMs`** (Long): Total round-trip latency.
+- **`Moderation`** (Struct):
+  - **`Flagged`** (Bool): If the input/output triggered moderation.
+  - **`Categories`** (List<string>): e.g., ["Hate", "SelfHarm"].
+  - **`RawResponse`** (String): JSON dump of mod API (optional/truncated).
 
 ## 3. Data Constraints
 - **Foreign Keys**: Enforced via code in the Repository layer.
