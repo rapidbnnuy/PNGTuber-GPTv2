@@ -12,6 +12,9 @@
       <HintPath>..\Streamer.bot-x64-1.0.1\Streamer.bot.Plugin.Interface.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
 
   <ItemGroup>
