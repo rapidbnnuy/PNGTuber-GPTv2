@@ -4,9 +4,8 @@ Your primary directive is to follow the **Architecture, Standards, and Constrain
 
 ## 1. Documentation First
 1. **READ** `docs/ARCHITECTURE_DESIGN.md` to understand the Pipeline Pattern.
-2. **READ** `docs/AI_SYSTEM_CONTEXT.md` for technical constraints.
-3. **READ** `docs/CODING_BIBLE.md` (This file) for style rules.
-4. **ENFORCE** the ".NET Framework 4.8.1" constraint.
+2. **READ** `docs/ENGINEERING_MANIFESTO.md` (The Law) for technical constraints.
+3. **ENFORCE** the ".NET Framework 4.8.1" constraint.
 5. **ENFORCE** strict "No Comments" policy. Code must be self-documenting.
 6. **ENFORCE** the "30 Lines of Code" limit per method. Refactor immediately if you exceed it.
 7. **ENFORCE** strict Null Safety (Guard Clauses) and mathematical purity.
