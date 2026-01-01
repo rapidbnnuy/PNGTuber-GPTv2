@@ -19,10 +19,8 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.100
+    - name: Verify .NET Environment
+      run: dotnet --info
 
     - name: Restore Dependencies
       run: dotnet restore PNGTuber-GPTv2.sln
