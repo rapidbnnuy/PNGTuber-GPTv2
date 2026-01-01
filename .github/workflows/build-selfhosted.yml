@@ -20,17 +20,15 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Verify Environment
-      run: |
-        msbuild -version
-        nuget help
+      run: dotnet --info
 
     - name: Restore Dependencies
-      run: nuget restore PNGTuber-GPTv2.sln
+      run: dotnet restore PNGTuber-GPTv2.sln
 
     - name: Build
-      run: msbuild PNGTuber-GPTv2.sln /p:Configuration=Release /p:Platform="Any CPU" /restore
+      run: dotnet build PNGTuber-GPTv2.sln --configuration Release --no-restore
 
     - name: Test (Quality Control)
-      # Using VSTest.Console.exe which comes with Build Tools
-      run: |
-        vstest.console.exe PNGTuber-GPTv2.Tests\bin\Release\net481\PNGTuber-GPTv2.Tests.dll /Logger:console
+      # Using VSTest via dotnet test (Now that CLI is available) or direct console
+      # Since we removed the target from csproj, we use command line
+      run: dotnet test PNGTuber-GPTv2.sln --configuration Release --no-build --logger "console;verbosity=minimal"
