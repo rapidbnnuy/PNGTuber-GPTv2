@@ -16,11 +16,18 @@ jobs:
         arch: [x64, ARM64]
 
     steps:
+    - name: Configure Environment (Force Path)
+      run: |
+        echo "C:\Program Files\dotnet" >> $env:GITHUB_PATH
+        echo "DOTNET_ROOT=C:\Program Files\dotnet" >> $env:GITHUB_ENV
+
     - name: Checkout Code
       uses: actions/checkout@v4
 
     - name: Verify Environment
-      run: dotnet --info
+      run: |
+        dotnet --info
+        Get-Command dotnet
 
     - name: Restore Dependencies
       run: dotnet restore PNGTuber-GPTv2.sln
