@@ -15,6 +15,10 @@ jobs:
       matrix:
         arch: [x64]
 
+    defaults:
+      run:
+        shell: powershell -ExecutionPolicy Bypass {0}
+
     steps:
     - name: Configure Environment (Force Path)
       run: |
