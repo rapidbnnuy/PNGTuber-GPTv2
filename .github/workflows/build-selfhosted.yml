@@ -19,16 +19,18 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Verify .NET Environment
-      run: dotnet --info
+    - name: Verify Environment
+      run: |
+        msbuild -version
+        nuget help
 
     - name: Restore Dependencies
-      run: dotnet restore PNGTuber-GPTv2.sln
+      run: nuget restore PNGTuber-GPTv2.sln
 
     - name: Build
-      run: dotnet build PNGTuber-GPTv2.sln --configuration Release --no-restore
+      run: msbuild PNGTuber-GPTv2.sln /p:Configuration=Release /p:Platform="Any CPU" /restore
 
     - name: Test (Quality Control)
-      # Tests might not run on ARM64 if xUnit runner isn't compatible, but .NET 9 is.
-      # We skip tests on ARM64 if they are flaky, but ideally we run them.
-      run: dotnet test PNGTuber-GPTv2.sln --configuration Release --no-build --logger "console;verbosity=minimal"
+      # Using VSTest.Console.exe which comes with Build Tools
+      run: |
+        vstest.console.exe PNGTuber-GPTv2.Tests\bin\Release\net481\PNGTuber-GPTv2.Tests.dll /Logger:console
