@@ -1,6 +1,7 @@
 # PNGTuber-GPTv2
+![Build Status](https://github.com/rapidbnnuy/PNGTuber-GPTv2/actions/workflows/build-selfhosted.yml/badge.svg)
 
-A Streamer.bot plugin that integrates LLM capabilities for PNGTubers.
+A multi-LLM, plugin-based AI co-host for Streamer.bot 0.2.2+.plugin that integrates LLM capabilities for PNGTubers.
 
 ## Overview
 This project is a C# Class Library targeting .NET Framework 4.8.1, designed to run as a plugin within Streamer.bot. It utilizes the `Streamer.bot.Plugin.Interface` to interact with the bot's core functionality.
