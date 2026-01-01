@@ -8,7 +8,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Caching
     {
         private readonly MemoryCache _cache;
         private readonly ILogger _logger;
-        // Default TTL if not specified
         private readonly TimeSpan _defaultDuration = TimeSpan.FromMinutes(30);
 
         public MemoryCacheService(ILogger logger)

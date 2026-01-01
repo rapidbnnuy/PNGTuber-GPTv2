@@ -17,16 +17,14 @@ namespace PNGTuber_GPTv2.Infrastructure.External
         {
             _logger = logger;
             _http = new HttpClient();
-            _http.Timeout = TimeSpan.FromSeconds(2); // Fast fail
+            _http.Timeout = TimeSpan.FromSeconds(2);
         }
 
         public async Task<Pronouns?> FetchPronounsAsync(string platformId, CancellationToken ct)
         {
             try
             {
-                // Alejo uses Twitch ID or Login. We prefer ID.
                 var response = await _http.GetAsync($"{ApiUrl}/{platformId}", ct);
-                
                 if (!response.IsSuccessStatusCode)
                 {
                     if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
@@ -35,23 +33,7 @@ namespace PNGTuber_GPTv2.Infrastructure.External
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                
-                // Alejo API JSON (Array of Objects): [{"name":"hehim","display":"He/Him"}, ...]
-                // Or Single Object (older API?): {"name":"..."}
-                // We assume Array based on docs.
-                
-                // Robust ID Extraction (Regex-free simple parse)
-                // We look for "name":"VALUE" or "pronoun_id":"VALUE"
-                string foundId = null;
-
-                if (json.Contains("\"name\":\""))
-                {
-                    foundId = ExtractValue(json, "\"name\":\"", "\"");
-                }
-                else if (json.Contains("\"pronoun_id\":\""))
-                {
-                    foundId = ExtractValue(json, "\"pronoun_id\":\"", "\"");
-                }
+                var foundId = ExtractPronounId(json);
 
                 if (!string.IsNullOrEmpty(foundId))
                 {
@@ -60,13 +42,22 @@ namespace PNGTuber_GPTv2.Infrastructure.External
                     return p;
                 }
                 
-                return null; // None found
+                return null;
             }
             catch (Exception ex)
             {
                 _logger.Warn($"[Alejo] Fetch Failed: {ex.Message}");
                 return null;
             }
+        }
+
+        private string ExtractPronounId(string json)
+        {
+            if (json.Contains("\"name\":\""))
+                return ExtractValue(json, "\"name\":\"", "\"");
+            if (json.Contains("\"pronoun_id\":\""))
+                return ExtractValue(json, "\"pronoun_id\":\"", "\"");
+            return null;
         }
 
         private string ExtractValue(string source, string startTag, string endTag)

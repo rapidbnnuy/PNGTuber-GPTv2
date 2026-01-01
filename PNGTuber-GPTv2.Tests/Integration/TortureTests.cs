@@ -17,6 +17,7 @@ using PNGTuber_GPTv2.Infrastructure.Caching;
 
 namespace PNGTuber_GPTv2.Tests.Integration
 {
+    [Collection("Serial Integration Tests")]
     public class TortureTests : IDisposable
     {
         private readonly string _tempRoot;
@@ -26,6 +27,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
 
         public TortureTests(ITestOutputHelper output)
         {
+            Environment.SetEnvironmentVariable("PNGTUBER_TEST_MUTEX", $"TortureMutex_{Guid.NewGuid():N}");
             _output = output;
             _tempRoot = Path.Combine(Path.GetTempPath(), $"torture_{Guid.NewGuid()}");
             Directory.CreateDirectory(_tempRoot);
@@ -35,6 +37,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
 
         public void Dispose()
         {
+            Environment.SetEnvironmentVariable("PNGTUBER_TEST_MUTEX", null);
             try { Directory.Delete(_tempRoot, true); } catch { }
         }
 
@@ -43,7 +46,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
         {
             // Arrange
             var cache = new Mock<ICacheService>();
-            var service = new ChatHistoryService(cache.Object);
+            var service = new ChatBufferService(cache.Object);
             var tasks = new List<Task>();
             int threadCount = 50;
             int msgsPerThread = 100;
@@ -92,7 +95,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
             // Acquire Global Mutex!
             using (var mutex = new DatabaseMutex(logger))
             {
-                bool locked = mutex.Acquire(TimeSpan.FromSeconds(1));
+                bool locked = mutex.Acquire(TimeSpan.FromSeconds(5));
                 Assert.True(locked, "Test failed to acquire mutex");
 
                 // Now try to read from Repo on a different thread
@@ -104,8 +107,8 @@ namespace PNGTuber_GPTv2.Tests.Integration
                 // Repo tries to acquire mutex. It waits 2s. 
                 // Since we hold it, it should fail to acquire, log warning, and return null.
                 
-                // We wait 3s to be sure
-                bool completed = task.Wait(TimeSpan.FromSeconds(5));
+                // We wait 7s to be sure (Repo waits 5s)
+                bool completed = task.Wait(TimeSpan.FromSeconds(7));
                 Assert.True(completed, "Repository hung indefinitely!");
                 
                 var result = task.Result;

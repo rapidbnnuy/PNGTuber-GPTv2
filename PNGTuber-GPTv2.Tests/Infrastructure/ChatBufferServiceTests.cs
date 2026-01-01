@@ -6,15 +6,15 @@ using PNGTuber_GPTv2.Infrastructure.Services;
 
 namespace PNGTuber_GPTv2.Tests.Infrastructure
 {
-    public class ChatHistoryServiceTests
+    public class ChatBufferServiceTests
     {
         private readonly Mock<ICacheService> _mockCache;
-        private readonly ChatHistoryService _service;
+        private readonly ChatBufferService _service;
 
-        public ChatHistoryServiceTests()
+        public ChatBufferServiceTests()
         {
             _mockCache = new Mock<ICacheService>();
-            _service = new ChatHistoryService(_mockCache.Object);
+            _service = new ChatBufferService(_mockCache.Object);
         }
 
         [Fact]

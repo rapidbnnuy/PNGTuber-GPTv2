@@ -1,0 +1,425 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  PNGTuber-GPTv2 -> /Users/cbruscato/Developer/PNGTuber-GPTv2/PNGTuber-GPTv2/bin/Debug/net481/PNGTuber-GPTv2.dll
+  PNGTuber-GPTv2.Tests -> /Users/cbruscato/Developer/PNGTuber-GPTv2/PNGTuber-GPTv2.Tests/bin/Debug/net9.0/PNGTuber-GPTv2.Tests.dll
+Test run for /Users/cbruscato/Developer/PNGTuber-GPTv2/PNGTuber-GPTv2.Tests/bin/Debug/net9.0/PNGTuber-GPTv2.Tests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 17.14.1 (arm64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+  Failed PNGTuber_GPTv2.Tests.Integration.BotEngineTests.TheStampede_100ConcurrentEvents_ProcessedSafely [13 s]
+  Error Message:
+   Assert.Equal() Failure
+Expected: 50
+Actual:   0
+  Stack Trace:
+     at PNGTuber_GPTv2.Tests.Integration.BotEngineTests.TheStampede_100ConcurrentEvents_ProcessedSafely() in /Users/cbruscato/Developer/PNGTuber-GPTv2/PNGTuber-GPTv2.Tests/Integration/BotEngineTests.cs:line 162
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ [FAILURE LOGS]: [2025-12-31 18:01:54.332 INFO] Bootstrapping PNGTuber-GPTv2 Engine (SEDA)...
+ [2025-12-31 18:01:54.333 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.333 DEBUG] Connecting to Database at: /var/folders/f5/5zy4wyh134qb3l05q0wj9l140000gn/T/test_engine_5886d5e9-0c16-4548-afb6-20d799ed1ca3/PNGTuber-GPT/PNGTuber-GPT.db (Exclusive)
+ [2025-12-31 18:01:54.347 INFO] Global Settings not found. Creating defaults.
+ [2025-12-31 18:01:54.356 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.356 DEBUG] No Database Lock File found.
+ [2025-12-31 18:01:54.356 INFO] Engine Online.
+ [2025-12-31 18:01:54.356 INFO] [RouterService] Started.
+ [2025-12-31 18:01:54.356 INFO] [ChatPersistence] Started.
+ [2025-12-31 18:01:54.356 INFO] [KnowledgeService] Started.
+ [2025-12-31 18:01:54.356 INFO] [CommandService] Started.
+ [2025-12-31 18:01:54.356 INFO] [IdentityService] Started.
+ [2025-12-31 18:01:54.356 INFO] [ResponseService] Started.
+ [2025-12-31 18:01:54.357 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.362 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.363 INFO] Fetching fresh pronouns for User 1 (twitch:stamper:1)...
+ [2025-12-31 18:01:54.504 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.505 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.507 DEBUG] [IdentityService] Resolved: User 1 (They/Them)
+ [2025-12-31 18:01:54.509 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.510 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.511 INFO] Fetching fresh pronouns for User 7 (twitch:stamper:7)...
+ [2025-12-31 18:01:54.579 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.580 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.580 DEBUG] [IdentityService] Resolved: User 7 (They/Them)
+ [2025-12-31 18:01:54.580 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.581 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.581 INFO] Fetching fresh pronouns for User 8 (twitch:stamper:8)...
+ [2025-12-31 18:01:54.635 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.635 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.636 DEBUG] [IdentityService] Resolved: User 8 (They/Them)
+ [2025-12-31 18:01:54.636 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.636 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.636 INFO] Fetching fresh pronouns for User 2 (twitch:stamper:2)...
+ [2025-12-31 18:01:54.698 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.698 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.698 DEBUG] [IdentityService] Resolved: User 2 (They/Them)
+ [2025-12-31 18:01:54.698 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.699 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.699 INFO] Fetching fresh pronouns for User 9 (twitch:stamper:9)...
+ [2025-12-31 18:01:54.754 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.754 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.755 DEBUG] [IdentityService] Resolved: User 9 (They/Them)
+ [2025-12-31 18:01:54.755 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.755 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.755 INFO] Fetching fresh pronouns for User 0 (twitch:stamper:0)...
+ [2025-12-31 18:01:54.837 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.837 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.837 DEBUG] [IdentityService] Resolved: User 0 (They/Them)
+ [2025-12-31 18:01:54.838 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.838 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.838 INFO] Fetching fresh pronouns for User 4 (twitch:stamper:4)...
+ [2025-12-31 18:01:54.900 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.901 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.901 DEBUG] [IdentityService] Resolved: User 4 (They/Them)
+ [2025-12-31 18:01:54.901 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.901 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.902 INFO] Fetching fresh pronouns for User 5 (twitch:stamper:5)...
+ [2025-12-31 18:01:54.957 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.957 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.958 DEBUG] [IdentityService] Resolved: User 5 (They/Them)
+ [2025-12-31 18:01:54.958 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:54.958 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:54.959 INFO] Fetching fresh pronouns for User 3 (twitch:stamper:3)...
+ [2025-12-31 18:01:55.019 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.019 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.020 DEBUG] [IdentityService] Resolved: User 3 (They/Them)
+ [2025-12-31 18:01:55.020 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.023 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.024 INFO] Fetching fresh pronouns for User 14 (twitch:stamper:14)...
+ [2025-12-31 18:01:55.082 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.082 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.083 DEBUG] [IdentityService] Resolved: User 14 (They/Them)
+ [2025-12-31 18:01:55.083 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.083 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.083 INFO] Fetching fresh pronouns for User 13 (twitch:stamper:13)...
+ [2025-12-31 18:01:55.136 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.136 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.137 DEBUG] [IdentityService] Resolved: User 13 (They/Them)
+ [2025-12-31 18:01:55.137 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.137 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.138 INFO] Fetching fresh pronouns for User 15 (twitch:stamper:15)...
+ [2025-12-31 18:01:55.194 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.194 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.194 DEBUG] [IdentityService] Resolved: User 15 (They/Them)
+ [2025-12-31 18:01:55.194 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.195 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.195 INFO] Fetching fresh pronouns for User 16 (twitch:stamper:16)...
+ [2025-12-31 18:01:55.247 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.248 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.248 DEBUG] [IdentityService] Resolved: User 16 (They/Them)
+ [2025-12-31 18:01:55.248 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.248 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.249 INFO] Fetching fresh pronouns for User 17 (twitch:stamper:17)...
+ [2025-12-31 18:01:55.306 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.307 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.307 DEBUG] [IdentityService] Resolved: User 17 (They/Them)
+ [2025-12-31 18:01:55.307 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.307 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.308 INFO] Fetching fresh pronouns for User 19 (twitch:stamper:19)...
+ [2025-12-31 18:01:55.363 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.363 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.364 DEBUG] [IdentityService] Resolved: User 19 (They/Them)
+ [2025-12-31 18:01:55.364 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.364 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.365 INFO] Fetching fresh pronouns for User 18 (twitch:stamper:18)...
+ [2025-12-31 18:01:55.421 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.421 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.422 DEBUG] [IdentityService] Resolved: User 18 (They/Them)
+ [2025-12-31 18:01:55.422 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.422 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.422 INFO] Fetching fresh pronouns for User 12 (twitch:stamper:12)...
+ [2025-12-31 18:01:55.485 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.486 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.486 DEBUG] [IdentityService] Resolved: User 12 (They/Them)
+ [2025-12-31 18:01:55.486 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.486 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.487 INFO] Fetching fresh pronouns for User 10 (twitch:stamper:10)...
+ [2025-12-31 18:01:55.542 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.542 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.542 DEBUG] [IdentityService] Resolved: User 10 (They/Them)
+ [2025-12-31 18:01:55.543 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.543 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.543 INFO] Fetching fresh pronouns for User 11 (twitch:stamper:11)...
+ [2025-12-31 18:01:55.594 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.595 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.595 DEBUG] [IdentityService] Resolved: User 11 (They/Them)
+ [2025-12-31 18:01:55.595 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.595 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.596 INFO] Fetching fresh pronouns for User 6 (twitch:stamper:6)...
+ [2025-12-31 18:01:55.649 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:55.649 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:55.649 DEBUG] [IdentityService] Resolved: User 6 (They/Them)
+ [2025-12-31 18:01:57.359 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.360 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.360 DEBUG] [IdentityService] Resolved: User 4 (They/Them)
+ [2025-12-31 18:01:57.361 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.361 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.361 DEBUG] [IdentityService] Resolved: User 1 (They/Them)
+ [2025-12-31 18:01:57.362 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.362 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.362 DEBUG] [IdentityService] Resolved: User 7 (They/Them)
+ [2025-12-31 18:01:57.363 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.363 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.363 DEBUG] [IdentityService] Resolved: User 2 (They/Them)
+ [2025-12-31 18:01:57.364 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.364 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.364 DEBUG] [IdentityService] Resolved: User 3 (They/Them)
+ [2025-12-31 18:01:57.364 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.365 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.365 DEBUG] [IdentityService] Resolved: User 9 (They/Them)
+ [2025-12-31 18:01:57.365 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.365 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.366 DEBUG] [IdentityService] Resolved: User 10 (They/Them)
+ [2025-12-31 18:01:57.366 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.366 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.366 DEBUG] [IdentityService] Resolved: User 13 (They/Them)
+ [2025-12-31 18:01:57.367 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.367 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.367 DEBUG] [IdentityService] Resolved: User 14 (They/Them)
+ [2025-12-31 18:01:57.368 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.368 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.368 DEBUG] [IdentityService] Resolved: User 15 (They/Them)
+ [2025-12-31 18:01:57.368 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.368 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.369 DEBUG] [IdentityService] Resolved: User 17 (They/Them)
+ [2025-12-31 18:01:57.369 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.369 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.370 DEBUG] [IdentityService] Resolved: User 16 (They/Them)
+ [2025-12-31 18:01:57.370 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.370 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.370 DEBUG] [IdentityService] Resolved: User 19 (They/Them)
+ [2025-12-31 18:01:57.371 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.371 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.371 DEBUG] [IdentityService] Resolved: User 18 (They/Them)
+ [2025-12-31 18:01:57.371 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.372 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.372 INFO] Fetching fresh pronouns for User 20 (twitch:stamper:20)...
+ [2025-12-31 18:01:57.429 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.430 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.430 DEBUG] [IdentityService] Resolved: User 20 (They/Them)
+ [2025-12-31 18:01:57.431 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.435 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.435 INFO] Fetching fresh pronouns for User 21 (twitch:stamper:21)...
+ [2025-12-31 18:01:57.494 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.494 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.495 DEBUG] [IdentityService] Resolved: User 21 (They/Them)
+ [2025-12-31 18:01:57.495 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.496 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.496 DEBUG] [IdentityService] Resolved: User 5 (They/Them)
+ [2025-12-31 18:01:57.497 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.497 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.497 INFO] Fetching fresh pronouns for User 22 (twitch:stamper:22)...
+ [2025-12-31 18:01:57.555 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.555 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.556 DEBUG] [IdentityService] Resolved: User 22 (They/Them)
+ [2025-12-31 18:01:57.556 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.556 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.557 DEBUG] [IdentityService] Resolved: User 11 (They/Them)
+ [2025-12-31 18:01:57.557 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.557 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.558 DEBUG] [IdentityService] Resolved: User 0 (They/Them)
+ [2025-12-31 18:01:57.558 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.558 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.559 INFO] Fetching fresh pronouns for User 26 (twitch:stamper:26)...
+ [2025-12-31 18:01:57.633 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.633 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.634 DEBUG] [IdentityService] Resolved: User 26 (They/Them)
+ [2025-12-31 18:01:57.634 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.634 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.634 INFO] Fetching fresh pronouns for User 23 (twitch:stamper:23)...
+ [2025-12-31 18:01:57.699 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.699 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.699 DEBUG] [IdentityService] Resolved: User 23 (They/Them)
+ [2025-12-31 18:01:57.699 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.700 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.700 INFO] Fetching fresh pronouns for User 25 (twitch:stamper:25)...
+ [2025-12-31 18:01:57.768 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.768 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.769 DEBUG] [IdentityService] Resolved: User 25 (They/Them)
+ [2025-12-31 18:01:57.769 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.769 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.769 INFO] Fetching fresh pronouns for User 30 (twitch:stamper:30)...
+ [2025-12-31 18:01:57.867 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.867 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.868 DEBUG] [IdentityService] Resolved: User 30 (They/Them)
+ [2025-12-31 18:01:57.868 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.868 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.869 INFO] Fetching fresh pronouns for User 24 (twitch:stamper:24)...
+ [2025-12-31 18:01:57.923 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.923 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.923 DEBUG] [IdentityService] Resolved: User 24 (They/Them)
+ [2025-12-31 18:01:57.924 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.924 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.925 INFO] Fetching fresh pronouns for User 28 (twitch:stamper:28)...
+ [2025-12-31 18:01:57.976 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.977 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.977 DEBUG] [IdentityService] Resolved: User 28 (They/Them)
+ [2025-12-31 18:01:57.977 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:57.977 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:57.978 INFO] Fetching fresh pronouns for User 31 (twitch:stamper:31)...
+ [2025-12-31 18:01:58.032 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.032 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.032 DEBUG] [IdentityService] Resolved: User 31 (They/Them)
+ [2025-12-31 18:01:58.036 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.036 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.037 INFO] Fetching fresh pronouns for User 29 (twitch:stamper:29)...
+ [2025-12-31 18:01:58.097 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.097 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.097 DEBUG] [IdentityService] Resolved: User 29 (They/Them)
+ [2025-12-31 18:01:58.098 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.098 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.098 INFO] Fetching fresh pronouns for User 27 (twitch:stamper:27)...
+ [2025-12-31 18:01:58.157 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.157 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.158 DEBUG] [IdentityService] Resolved: User 27 (They/Them)
+ [2025-12-31 18:01:58.158 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.158 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.159 INFO] Fetching fresh pronouns for User 32 (twitch:stamper:32)...
+ [2025-12-31 18:01:58.214 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.214 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.215 DEBUG] [IdentityService] Resolved: User 32 (They/Them)
+ [2025-12-31 18:01:58.215 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.215 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.216 INFO] Fetching fresh pronouns for User 33 (twitch:stamper:33)...
+ [2025-12-31 18:01:58.273 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.273 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.274 DEBUG] [IdentityService] Resolved: User 33 (They/Them)
+ [2025-12-31 18:01:58.274 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.274 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.275 INFO] Fetching fresh pronouns for User 35 (twitch:stamper:35)...
+ [2025-12-31 18:01:58.332 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.332 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.332 DEBUG] [IdentityService] Resolved: User 35 (They/Them)
+ [2025-12-31 18:01:58.333 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.333 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.333 INFO] Fetching fresh pronouns for User 34 (twitch:stamper:34)...
+ [2025-12-31 18:01:58.391 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.391 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.391 DEBUG] [IdentityService] Resolved: User 34 (They/Them)
+ [2025-12-31 18:01:58.391 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.391 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.392 INFO] Fetching fresh pronouns for User 36 (twitch:stamper:36)...
+ [2025-12-31 18:01:58.450 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.450 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.450 DEBUG] [IdentityService] Resolved: User 36 (They/Them)
+ [2025-12-31 18:01:58.451 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.451 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.451 INFO] Fetching fresh pronouns for User 37 (twitch:stamper:37)...
+ [2025-12-31 18:01:58.502 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.503 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.503 DEBUG] [IdentityService] Resolved: User 37 (They/Them)
+ [2025-12-31 18:01:58.503 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.504 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.504 INFO] Fetching fresh pronouns for User 38 (twitch:stamper:38)...
+ [2025-12-31 18:01:58.558 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.558 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.559 DEBUG] [IdentityService] Resolved: User 38 (They/Them)
+ [2025-12-31 18:01:58.559 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.559 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.560 INFO] Fetching fresh pronouns for User 39 (twitch:stamper:39)...
+ [2025-12-31 18:01:58.614 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.614 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.615 DEBUG] [IdentityService] Resolved: User 39 (They/Them)
+ [2025-12-31 18:01:58.615 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.615 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.615 INFO] Fetching fresh pronouns for User 40 (twitch:stamper:40)...
+ [2025-12-31 18:01:58.665 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.668 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.668 DEBUG] [IdentityService] Resolved: User 40 (They/Them)
+ [2025-12-31 18:01:58.669 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.669 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.669 INFO] Fetching fresh pronouns for User 42 (twitch:stamper:42)...
+ [2025-12-31 18:01:58.719 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.720 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.720 DEBUG] [IdentityService] Resolved: User 42 (They/Them)
+ [2025-12-31 18:01:58.720 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.721 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.721 INFO] Fetching fresh pronouns for User 44 (twitch:stamper:44)...
+ [2025-12-31 18:01:58.781 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.782 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.782 DEBUG] [IdentityService] Resolved: User 44 (They/Them)
+ [2025-12-31 18:01:58.782 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.782 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.783 INFO] Fetching fresh pronouns for User 41 (twitch:stamper:41)...
+ [2025-12-31 18:01:58.838 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.838 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.839 DEBUG] [IdentityService] Resolved: User 41 (They/Them)
+ [2025-12-31 18:01:58.839 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.839 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.839 INFO] Fetching fresh pronouns for User 43 (twitch:stamper:43)...
+ [2025-12-31 18:01:58.891 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.891 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.891 DEBUG] [IdentityService] Resolved: User 43 (They/Them)
+ [2025-12-31 18:01:58.892 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.892 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.892 DEBUG] [IdentityService] Resolved: User 6 (They/Them)
+ [2025-12-31 18:01:58.893 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.893 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.893 INFO] Fetching fresh pronouns for User 46 (twitch:stamper:46)...
+ [2025-12-31 18:01:58.954 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.955 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.956 DEBUG] [IdentityService] Resolved: User 46 (They/Them)
+ [2025-12-31 18:01:58.957 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:58.957 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:58.958 INFO] Fetching fresh pronouns for User 47 (twitch:stamper:47)...
+ [2025-12-31 18:01:59.012 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.013 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.014 DEBUG] [IdentityService] Resolved: User 47 (They/Them)
+ [2025-12-31 18:01:59.015 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.016 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.016 INFO] Fetching fresh pronouns for User 48 (twitch:stamper:48)...
+ [2025-12-31 18:01:59.074 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.075 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.075 DEBUG] [IdentityService] Resolved: User 48 (They/Them)
+ [2025-12-31 18:01:59.076 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.077 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.077 INFO] Fetching fresh pronouns for User 49 (twitch:stamper:49)...
+ [2025-12-31 18:01:59.138 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.139 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.140 DEBUG] [IdentityService] Resolved: User 49 (They/Them)
+ [2025-12-31 18:01:59.141 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.141 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.142 INFO] Fetching fresh pronouns for User 45 (twitch:stamper:45)...
+ [2025-12-31 18:01:59.192 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.193 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.193 DEBUG] [IdentityService] Resolved: User 45 (They/Them)
+ [2025-12-31 18:01:59.194 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.194 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.195 DEBUG] [IdentityService] Resolved: User 12 (They/Them)
+ [2025-12-31 18:01:59.201 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:01:59.201 DEBUG] Database Mutex released.
+ [2025-12-31 18:01:59.202 DEBUG] [IdentityService] Resolved: User 8 (They/Them)
+ 
+
+
+  Failed PNGTuber_GPTv2.Tests.Integration.BotEngineTests.TheStudent_LearnsAndRecalls [2 s]
+  Error Message:
+   Assert.NotNull() Failure
+  Stack Trace:
+     at PNGTuber_GPTv2.Tests.Integration.BotEngineTests.TheStudent_LearnsAndRecalls() in /Users/cbruscato/Developer/PNGTuber-GPTv2/PNGTuber-GPTv2.Tests/Integration/BotEngineTests.cs:line 221
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ [FAILURE LOGS]: [2025-12-31 18:02:07.393 INFO] Bootstrapping PNGTuber-GPTv2 Engine (SEDA)...
+ [2025-12-31 18:02:07.393 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:02:07.393 DEBUG] Connecting to Database at: /var/folders/f5/5zy4wyh134qb3l05q0wj9l140000gn/T/test_engine_476b946f-7621-48d1-96ad-e03ebe44a0ae/PNGTuber-GPT/PNGTuber-GPT.db (Exclusive)
+ [2025-12-31 18:02:07.402 INFO] Global Settings not found. Creating defaults.
+ [2025-12-31 18:02:07.407 DEBUG] Database Mutex released.
+ [2025-12-31 18:02:07.408 DEBUG] No Database Lock File found.
+ [2025-12-31 18:02:07.408 INFO] Engine Online.
+ [2025-12-31 18:02:07.408 INFO] [IdentityService] Started.
+ [2025-12-31 18:02:07.408 INFO] [CommandService] Started.
+ [2025-12-31 18:02:07.408 INFO] [ChatPersistence] Started.
+ [2025-12-31 18:02:07.408 INFO] [KnowledgeService] Started.
+ [2025-12-31 18:02:07.408 INFO] [ResponseService] Started.
+ [2025-12-31 18:02:07.408 INFO] [RouterService] Started.
+ [2025-12-31 18:02:07.409 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:02:07.414 DEBUG] Database Mutex released.
+ [2025-12-31 18:02:07.416 INFO] Fetching fresh pronouns for Teacher (twitch:999)...
+ [2025-12-31 18:02:07.565 DEBUG] Database Mutex acquired.
+ [2025-12-31 18:02:07.565 DEBUG] Database Mutex released.
+ [2025-12-31 18:02:07.565 DEBUG] [IdentityService] Resolved: Teacher (They/Them)
+ 
+
+
+
+Failed!  - Failed:     2, Passed:     1, Skipped:     0, Total:     3, Duration: 19 s - PNGTuber-GPTv2.Tests.dll (net9.0)

@@ -3,8 +3,8 @@ using System.Threading;
 
 namespace PNGTuber_GPTv2.Core.Interfaces
 {
-    public interface IConsumer<in T>
+    public interface IConsumer
     {
-        Task ProcessAsync(T message, CancellationToken ct);
+        Task StartAsync(CancellationToken ct);
     }
 }

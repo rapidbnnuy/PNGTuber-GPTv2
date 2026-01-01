@@ -50,31 +50,9 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
             using (var mutex = new DatabaseMutex(_logger))
             {
                 if (!mutex.Acquire(TimeSpan.FromSeconds(2))) return (null, false);
-
                 try
                 {
-                    using (var db = new LiteDatabase($"Filename={_dbPath}"))
-                    {
-                        var col = db.GetCollection<BsonDocument>("user_pronouns");
-                        var doc = col.FindOne(x => x["UserId"] == userId);
-
-                        if (doc == null) return (null, false);
-
-                        var p = new Pronouns(
-                            doc["Display"].AsString,
-                            doc["Subject"].AsString,
-                            doc["Object"].AsString,
-                            doc["Possessive"].AsString,
-                            doc["PossessivePronoun"].AsString,
-                            doc["Reflexive"].AsString,
-                            doc["PastTense"].AsString,
-                            doc["CurrentTense"].AsString,
-                            doc["Plural"].AsBoolean
-                        );
-                        
-                        var isFresh = (DateTime.UtcNow - doc["LastUpdated"].AsDateTime).TotalDays < 7;
-                        return (p, isFresh);
-                    }
+                    return ReadPronounsFromDb(userId);
                 }
                 catch (Exception ex)
                 {
@@ -84,11 +62,28 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
             }
         }
 
+        private (Pronouns? result, bool isFresh) ReadPronounsFromDb(string userId)
+        {
+            using (var db = new LiteDatabase($"Filename={_dbPath}"))
+            {
+                var col = db.GetCollection<BsonDocument>("user_pronouns");
+                var doc = col.FindOne(x => x["UserId"] == userId);
+                if (doc == null) return (null, false);
+
+                var p = new Pronouns(
+                    doc["Display"].AsString, doc["Subject"].AsString, doc["Object"].AsString,
+                    doc["Possessive"].AsString, doc["PossessivePronoun"].AsString, doc["Reflexive"].AsString,
+                    doc["PastTense"].AsString, doc["CurrentTense"].AsString, doc["Plural"].AsBoolean
+                );
+                var isFresh = (DateTime.UtcNow - doc["LastUpdated"].AsDateTime).TotalDays < 7;
+                return (p, isFresh);
+            }
+        }
+
         private async Task<Pronouns?> FetchFromApi(string userId, string displayName, CancellationToken ct)
         {
             _logger.Info($"Fetching fresh pronouns for {displayName} ({userId})...");
-            return await _api.FetchPronounsAsync(displayName.ToLower(), ct) 
-                ?? await _api.FetchPronounsAsync(userId, ct);
+            return await _api.FetchPronounsAsync(displayName.ToLower(), ct) ?? await _api.FetchPronounsAsync(userId, ct);
         }
 
         private void UpdateDatabase(string userId, Pronouns p)
@@ -96,34 +91,25 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
             using (var mutex = new DatabaseMutex(_logger))
             {
                 if (!mutex.Acquire(TimeSpan.FromSeconds(2))) return;
-
-                try
+                try { WritePronounsToDb(userId, p); }
+                catch (Exception ex) { _logger.Error($"DB Write Failed: {ex.Message}"); }
+            }
+        }
+        
+        private void WritePronounsToDb(string userId, Pronouns p)
+        {
+            using (var db = new LiteDatabase($"Filename={_dbPath}"))
+            {
+                var col = db.GetCollection<BsonDocument>("user_pronouns");
+                var doc = new BsonDocument
                 {
-                    using (var db = new LiteDatabase($"Filename={_dbPath}"))
-                    {
-                        var col = db.GetCollection<BsonDocument>("user_pronouns");
-                        var doc = new BsonDocument
-                        {
-                            ["UserId"] = userId,
-                            ["Display"] = p.Display,
-                            ["Subject"] = p.Subject,
-                            ["Object"] = p.Object,
-                            ["Possessive"] = p.Possessive,
-                            ["PossessivePronoun"] = p.PossessivePronoun,
-                            ["Reflexive"] = p.Reflexive,
-                            ["PastTense"] = p.PastTense,
-                            ["CurrentTense"] = p.CurrentTense,
-                            ["Plural"] = p.Plural,
-                            ["LastUpdated"] = DateTime.UtcNow
-                        };
-                        col.Upsert(doc);
-                        col.EnsureIndex("UserId");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error($"DB Write Failed: {ex.Message}");
-                }
+                    ["UserId"] = userId, ["Display"] = p.Display, ["Subject"] = p.Subject,
+                    ["Object"] = p.Object, ["Possessive"] = p.Possessive, ["PossessivePronoun"] = p.PossessivePronoun,
+                    ["Reflexive"] = p.Reflexive, ["PastTense"] = p.PastTense, ["CurrentTense"] = p.CurrentTense,
+                    ["Plural"] = p.Plural, ["LastUpdated"] = DateTime.UtcNow
+                };
+                col.Upsert(doc);
+                col.EnsureIndex("UserId");
             }
         }
     }

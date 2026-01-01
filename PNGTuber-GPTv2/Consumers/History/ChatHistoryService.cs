@@ -5,16 +5,16 @@ using PNGTuber_GPTv2.Domain.DTOs;
 
 namespace PNGTuber_GPTv2.Consumers.History
 {
-    public class HistoryStep : IPipelineStep
+    public class ChatHistoryService : IPipelineStep
     {
         private readonly ICacheService _cache;
-        private readonly IChatHistoryService _history;
+        private readonly IChatBufferService _buffer;
         private readonly ILogger _logger;
 
-        public HistoryStep(ICacheService cache, IChatHistoryService history, ILogger logger)
+        public ChatHistoryService(ICacheService cache, IChatBufferService buffer, ILogger logger)
         {
             _cache = cache;
-            _history = history;
+            _buffer = buffer;
             _logger = logger;
         }
 
@@ -25,7 +25,6 @@ namespace PNGTuber_GPTv2.Consumers.History
 
             if (context == null || context.User == null) return Task.CompletedTask;
 
-            // Only archive Chat messages for now? Or all? User spec: "When a user sends a message..."
             if (context.EventType == "Chat" && !string.IsNullOrWhiteSpace(context.CleanedMessage))
             {
                 var name = context.User.Nickname ?? context.User.DisplayName;
@@ -33,7 +32,7 @@ namespace PNGTuber_GPTv2.Consumers.History
                 
                 var formatted = $"{name} ({pDisplay}) said {context.CleanedMessage}";
                 
-                _history.AddMessage(formatted);
+                _buffer.AddMessage(formatted);
                 _logger.Info($"[History] Archived: {formatted}");
             }
 

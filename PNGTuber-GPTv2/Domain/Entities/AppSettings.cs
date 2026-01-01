@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace PNGTuber_GPTv2.Domain.Entities
 {
     public class AppSettings
     {
-        // LiteDB ID. We'll use a constant "Global" for the singleton settings.
-        public string Id { get; set; } = "Global";
+        public const string GlobalId = "Global";
+        public string Id { get; set; } = GlobalId;
 
         public string OpenApiKey { get; set; }
         public string OpenAiModel { get; set; }
@@ -28,9 +29,9 @@ namespace PNGTuber_GPTv2.Domain.Entities
         public string CompletionsEndpoint { get; set; }
 
         public string LoggingLevel { get; set; }
-        public string TextCleanMode { get; set; }
+        public string StreamerId { get; set; }
+        public string StreamerPlatform { get; set; } = "Twitch";
         
-        // Moderation Thresholds (Strings as per user request, though distinct types preferrable)
         public string HateThreshold { get; set; }
         public string HateThreateningThreshold { get; set; }
         public string HarassmentThreshold { get; set; }
@@ -56,8 +57,8 @@ namespace PNGTuber_GPTv2.Domain.Entities
         public string OutboundWebhookUrl { get; set; }
         public string OutboundWebhookMode { get; set; }
 
-        // Normalized to PascalCase
         public bool ModerationEnabled { get; set; } = true;
+        public List<string> BannedKeywords { get; set; } = new List<string>();
         public bool ModerationRebukeEnabled { get; set; } = true;
         public int MaxChatHistory { get; set; } = 20;
         public int MaxPromptHistory { get; set; } = 10;
@@ -67,7 +68,6 @@ namespace PNGTuber_GPTv2.Domain.Entities
             return new AppSettings
             {
                 Id = "Global",
-                // Set defaults as needed to avoid nulls
                 LoggingLevel = "INFO",
                 Version = "2.0.0",
                 ModerationEnabled = true,
@@ -75,8 +75,6 @@ namespace PNGTuber_GPTv2.Domain.Entities
                 MaxChatHistory = 20,
                 MaxPromptHistory = 10,
                 OpenAiModel = "gpt-4o",
-                // Initialize strings to empty to avoid strict null issues if needed, or keep null.
-                // Keeping nulls for now as they represent "not set".
             };
         }
     }

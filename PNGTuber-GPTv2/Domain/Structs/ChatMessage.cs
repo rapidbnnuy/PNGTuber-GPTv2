@@ -9,9 +9,9 @@ namespace PNGTuber_GPTv2.Domain.Structs
         public string Platform { get; }
         public string Message { get; }
         public string DisplayName { get; }
-        public int Role { get; } // 1=Broadcaster, 2=Mod, 3=VIP, 4=User
+        public int Role { get; }
         public bool IsSub { get; }
-        public Pronouns Pronouns { get; } // Injected/Cached
+        public Pronouns Pronouns { get; }
 
         public ChatMessage(string id, string userId, string platform, string message, string displayName, int role, bool isSub, Pronouns pronouns)
         {

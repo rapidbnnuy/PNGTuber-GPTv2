@@ -1,13 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <!-- Windows (CI/VM): Run Native .NET 4.8.1 (The Real Tests) -->
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">net481</TargetFrameworks>
+    
+    <!-- Mac/Linux (Local Dev): Run .NET 9.0 Shim (The "Good Enough" Tests) -->
+    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">net9.0</TargetFrameworks>
+
     <IsPackable>false</IsPackable>
+    
+    <!-- Suppress Compatibility Warning ONLY on Non-Windows (Mac) -->
+    <NoWarn Condition="'$(OS)' != 'Windows_NT'">$(NoWarn);NU1702</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
-    <PackageReference Include="System.Runtime.Caching" Version="10.0.1" />
+    <PackageReference Include="System.Runtime.Caching" Version="9.0.0" />
+    <PackageReference Include="System.Threading.Channels" Version="9.0.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,9 +36,14 @@
 
   <ItemGroup>
     <Reference Include="Streamer.bot.Plugin.Interface">
-      <HintPath>..\Streamer.bot-x64-1.0.1\Streamer.bot.Plugin.Interface.dll</HintPath>
+      <HintPath>..\lib\Streamer.bot.Plugin.Interface.dll</HintPath>
       <Private>true</Private>
     </Reference>
   </ItemGroup>
+
+  <Target Name="EnforceQualityControl" AfterTargets="Build">
+    <Message Text="✨ Verifying Code Quality Compliance (No Comments, Max 30 LOC)..." Importance="high" />
+    <Exec Command="dotnet test --filter QualityControlTests --no-build --logger &quot;console;verbosity=minimal&quot;" IgnoreExitCode="false" />
+  </Target>
 
 </Project>

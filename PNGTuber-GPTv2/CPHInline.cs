@@ -13,9 +13,6 @@ namespace PNGTuber_GPTv2
         private static BotEngine _engine;
         private static readonly object _lock = new object();
 
-        // ------------------------------------------------------------
-        // Adapter Implementation
-        // ------------------------------------------------------------
         public class CPHAdapter : IStreamerBotProxy
         {
             private readonly IInlineInvokeProxy _cph;
@@ -42,13 +39,35 @@ namespace PNGTuber_GPTv2
 
             public void LogError(string message, Exception ex)
             {
-                // CPH LogInfo fallback for now as LogError might not exist in older interfaces
                 _cph.LogInfo($"[ERROR] {message} - {ex}");
             }
+
+            public bool UnsetGlobalVar(string varName, bool persisted = true)
+            {
+                _cph.UnsetGlobalVar(varName, persisted);
+                return true;
+            }
+
+            public void EnableCommand(string id)
+            {
+                _cph.EnableCommand(id);
+            }
+
+            public void DisableCommand(string id)
+            {
+                _cph.DisableCommand(id);
+            }
         }
-        // ------------------------------------------------------------
 
         public bool Execute()
+        {
+            InitializeEngine();
+            var eventArgs = BuildEventArgs();
+            _engine.Ingest(eventArgs);
+            return true;
+        }
+
+        private void InitializeEngine()
         {
             lock (_lock)
             {
@@ -59,17 +78,15 @@ namespace PNGTuber_GPTv2
                     if (!_engine.Start())
                     {
                         _engine = null;
-                        return false;
+                        throw new Exception("Engine Start Failed");
                     }
                 }
             }
+        }
 
-            // Extract Args using CPH directly (legacy) or Adapter?
-            // Existing logic uses local TryAddVar helper.
-            // Let's keep existing logic for now to minimize diff, but BotEngine only uses Adapter.
-            
+        private Dictionary<string, object> BuildEventArgs()
+        {
             var eventArgs = new Dictionary<string, object>();
-            
             TryAddVar(eventArgs, "commandId");
             TryAddVar(eventArgs, "command");
             TryAddVar(eventArgs, "triggerType");
@@ -80,9 +97,7 @@ namespace PNGTuber_GPTv2
             TryAddVar(eventArgs, "display_name");
             TryAddVar(eventArgs, "message");
             TryAddVar(eventArgs, "rawInput");
-
-            _engine.Ingest(eventArgs);
-            return true;
+            return eventArgs;
         }
 
         private void TryAddVar(Dictionary<string, object> dict, string key)

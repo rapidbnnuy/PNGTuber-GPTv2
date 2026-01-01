@@ -13,6 +13,7 @@ using PNGTuber_GPTv2.Core.Interfaces;
 
 namespace PNGTuber_GPTv2.Tests.Integration
 {
+    [Collection("Serial Integration Tests")]
     public class BotEngineTests : IDisposable
     {
         private readonly string _tempRoot;
@@ -30,6 +31,35 @@ namespace PNGTuber_GPTv2.Tests.Integration
             _mockCph.Setup(c => c.GetGlobalVar<string>("Database Path", true)).Returns(_tempRoot);
             _mockCph.Setup(c => c.GetGlobalVar<string>("Logging Level", true)).Returns("DEBUG");
             _mockCph.Setup(c => c.LogInfo(It.IsAny<string>())).Callback<string>(s => _output.WriteLine($"[CPH] {s}"));
+        }
+
+        [Fact]
+        public void IgnoredUser_IsSkipped()
+        {
+            _mockCph.Setup(c => c.GetGlobalVar<string>("IgnoreBotNames", true)).Returns("IgnoredBot, OtherBot");
+            _engine = new BotEngine(_mockCph.Object);
+            _engine.Start();
+
+            // Act: Ignored User sends !setnick
+            var args = new Dictionary<string, object>
+            {
+                { "triggerType", "Chat" },
+                { "message", "!setnick BadBot" },
+                { "user", "IgnoredBot" },
+                { "userId", "twitch:999" },
+                { "display_name", "IgnoredBot" }
+            };
+            _engine.Ingest(args);
+            
+            // Wait for potential processing
+            Thread.Sleep(2000);
+
+            // Assert: Check DB empty
+            using (var db = new LiteDatabase($"Filename={Path.Combine(_tempRoot, "PNGTuber-GPT", "pngtuber.db")}"))
+            {
+                var col = db.GetCollection<BsonDocument>("user_nicknames");
+                Assert.Equal(0, col.Count());
+            }
         }
 
         [Fact]
@@ -271,7 +301,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
             
             Assert.NotNull(history);
             Assert.Single(history);
-            Assert.Contains("HistoryUser (They/Them) said Hello World", history[0]); // Default pronouns
+            Assert.Contains("HistoryUser / (None) (They/Them) said Hello World.", history[0]); // Default pronouns
             
             // 3. Overflow
             for (int i = 0; i < 25; i++)

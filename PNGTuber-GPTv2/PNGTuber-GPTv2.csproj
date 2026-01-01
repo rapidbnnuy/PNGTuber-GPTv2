@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Reference Include="Streamer.bot.Plugin.Interface">
-      <HintPath>..\Streamer.bot-x64-1.0.1\Streamer.bot.Plugin.Interface.dll</HintPath>
+      <HintPath>..\lib\Streamer.bot.Plugin.Interface.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.21" />
-    <PackageReference Include="System.Threading.Channels" Version="10.0.1" />
+    <PackageReference Include="System.Threading.Channels" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

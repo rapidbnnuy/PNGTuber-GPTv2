@@ -11,6 +11,7 @@ using PNGTuber_GPTv2.Infrastructure.Caching;
 
 namespace PNGTuber_GPTv2.Tests.Integration
 {
+    [Collection("Serial Integration Tests")]
     public class KnowledgeRepositoryTests : IDisposable
     {
         private readonly string _dbPath;
@@ -41,6 +42,10 @@ namespace PNGTuber_GPTv2.Tests.Integration
             Assert.Single(results);
             Assert.Equal("rust", results[0].Key);
             Assert.Equal("Rust is a systems programming language.", results[0].Content);
+            
+            // Verify Cache Write for "knowledge_all" (invalidation) and specific fact
+            _mockCache.Verify(c => c.Remove("knowledge_all"), Times.Once);
+            _mockCache.Verify(c => c.Set("fact_rust", "Rust is a systems programming language.", It.IsAny<TimeSpan>()), Times.Once);
         }
 
         [Fact]

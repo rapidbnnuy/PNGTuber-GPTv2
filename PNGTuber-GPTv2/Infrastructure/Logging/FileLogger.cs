@@ -13,7 +13,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Logging
 
         public FileLogger(string basePath, LogLevel configuredLevel)
         {
-            // Ensure PNGTuber-GPT/logs structure
             _logDirectory = Path.Combine(basePath, "PNGTuber-GPT", "logs");
             _configuredLevel = configuredLevel;
 
@@ -25,13 +24,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Logging
 
         public void Log(string message, LogLevel level)
         {
-            // Priority Check: Lower numeric value = Higher Priority.
-            // If message level (e.g. Debug=4) > Configured (Error=1), we skip it?
-            // User snippet: "if (logLevelPriority[logLevel] <= logLevelPriority[globalLogLevel])"
-            // Dictionary was: Error=1, Warn=2, Info=3, Debug=4.
-            // If Global=INFO(3). Msg=DEBUG(4). 4 <= 3 is False. Skip.
-            // If Global=INFO(3). Msg=ERROR(1). 1 <= 3 is True. Write.
-            
             if ((int)level > (int)_configuredLevel)
             {
                 return;
@@ -42,7 +34,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Logging
                 string logFileName = DateTime.Now.ToString("PNGTuber-GPT_yyyyMMdd") + ".log";
                 string logFilePath = Path.Combine(_logDirectory, logFileName);
                 
-                // Format: [2025-12-31 12:00:00.000 INFO] Message
                 string logEntry = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} {level.ToString().ToUpper()}] {message}{Environment.NewLine}";
 
                 lock (_lock)
@@ -52,8 +43,6 @@ namespace PNGTuber_GPTv2.Infrastructure.Logging
             }
             catch
             {
-                // Fail silently or fallback? 
-                // We cannot log the failure of the logger easily without CPH reference.
             }
         }
 

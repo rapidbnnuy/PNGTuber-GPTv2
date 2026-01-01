@@ -29,39 +29,36 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
             {
                 using (var mutex = new DatabaseMutex(_logger))
                 {
-                    try
-                    {
-                        using (var db = new LiteDatabase($"Filename={_dbPath}"))
-                        {
-                            var col = db.GetCollection<KnowledgeEntry>(COLLECTION_NAME);
-                            var cleanKey = key.Trim().ToLowerInvariant();
-
-                            var existing = col.FindOne(x => x.Key == cleanKey);
-                            if (existing != null)
-                            {
-                                existing.Content = content;
-                                existing.CreatedBy = userId;
-                                existing.CreatedAt = DateTime.UtcNow;
-                                col.Update(existing);
-                            }
-                            else
-                            {
-                                col.Insert(new KnowledgeEntry
-                                {
-                                    Key = cleanKey,
-                                    Content = content,
-                                    CreatedBy = userId
-                                });
-                                col.EnsureIndex(x => x.Key);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error($"[KnowledgeRepo] Add Failed: {ex.Message}");
-                    }
+                    try { UpsertFact(key, content, userId); }
+                    catch (Exception ex) { _logger.Error($"[KnowledgeRepo] Add Failed: {ex.Message}"); }
                 }
             }, ct);
+        }
+
+        private void UpsertFact(string key, string content, string userId)
+        {
+            using (var db = new LiteDatabase($"Filename={_dbPath}"))
+            {
+                var col = db.GetCollection<KnowledgeEntry>(COLLECTION_NAME);
+                var cleanKey = key.Trim().ToLowerInvariant();
+                var existing = col.FindOne(x => x.Key == cleanKey);
+
+                if (existing != null)
+                {
+                    existing.Content = content;
+                    existing.CreatedBy = userId;
+                    existing.CreatedAt = DateTime.UtcNow;
+                    col.Update(existing);
+                }
+                else
+                {
+                    col.Insert(new KnowledgeEntry { Key = cleanKey, Content = content, CreatedBy = userId });
+                    col.EnsureIndex(x => x.Key);
+                }
+
+                _cache.Remove("knowledge_all");
+                _cache.Set($"fact_{cleanKey}", content, TimeSpan.FromDays(7));
+            }
         }
 
         public Task RemoveFactAsync(string key, CancellationToken ct)
@@ -76,6 +73,9 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                         {
                             var col = db.GetCollection<KnowledgeEntry>(COLLECTION_NAME);
                             col.DeleteMany(x => x.Key == key.Trim().ToLowerInvariant());
+                            
+                            _cache.Remove("knowledge_all");
+                            _cache.Remove($"fact_{key.Trim().ToLowerInvariant()}");
                         }
                     }
                     catch (Exception ex)
@@ -115,6 +115,8 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
         {
             return Task.Run(() =>
             {
+                if (_cache.Exists("knowledge_all")) return _cache.Get<List<KnowledgeEntry>>("knowledge_all");
+
                 using (var mutex = new DatabaseMutex(_logger))
                 {
                     try
@@ -122,7 +124,9 @@ namespace PNGTuber_GPTv2.Infrastructure.Persistence
                         using (var db = new LiteDatabase($"Filename={_dbPath}"))
                         {
                             var col = db.GetCollection<KnowledgeEntry>(COLLECTION_NAME);
-                            return col.FindAll().ToList();
+                            var all = col.FindAll().ToList();
+                            _cache.Set("knowledge_all", all, TimeSpan.FromMinutes(60));
+                            return all;
                         }
                     }
                     catch (Exception ex)

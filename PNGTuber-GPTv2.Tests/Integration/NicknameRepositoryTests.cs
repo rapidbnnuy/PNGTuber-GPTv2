@@ -9,6 +9,7 @@ using PNGTuber_GPTv2.Infrastructure.Persistence;
 
 namespace PNGTuber_GPTv2.Tests.Integration
 {
+    [Collection("Serial Integration Tests")]
     public class NicknameRepositoryTests : IDisposable
     {
         private readonly string _tempDb;
@@ -18,6 +19,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
 
         public NicknameRepositoryTests()
         {
+            Environment.SetEnvironmentVariable("PNGTUBER_TEST_MUTEX", $"TestMutex_{Guid.NewGuid():N}");
             _tempDb = Path.Combine(Path.GetTempPath(), $"test_db_{Guid.NewGuid()}.db");
             _mockCache = new Mock<ICacheService>();
             _mockLogger = new Mock<ILogger>();
@@ -59,6 +61,7 @@ namespace PNGTuber_GPTv2.Tests.Integration
 
         public void Dispose()
         {
+            Environment.SetEnvironmentVariable("PNGTUBER_TEST_MUTEX", null);
             if (File.Exists(_tempDb))
             {
                 try { File.Delete(_tempDb); } catch {}

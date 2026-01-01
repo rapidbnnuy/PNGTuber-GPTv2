@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Channels;
 using PNGTuber_GPTv2.Core.Interfaces;
 using PNGTuber_GPTv2.Domain.DTOs;
 
@@ -14,15 +13,14 @@ namespace PNGTuber_GPTv2.Crypto
         private readonly ICacheService _cache;
         private readonly List<IPipelineStep> _steps;
         
-        private readonly Channel<string> _processingQueue;
+        private readonly IProcessingQueue _queue;
 
-        public Brain(ILogger logger, ICacheService cache, IEnumerable<IPipelineStep> steps)
+        public Brain(ILogger logger, ICacheService cache, IEnumerable<IPipelineStep> steps, IProcessingQueue queue)
         {
             _logger = logger;
             _cache = cache;
             _steps = new List<IPipelineStep>(steps);
-            
-            _processingQueue = Channel.CreateUnbounded<string>();
+            _queue = queue;
         }
 
         public void StartProcessing(CancellationToken ct)
@@ -32,44 +30,55 @@ namespace PNGTuber_GPTv2.Crypto
 
         public void Ingest(Dictionary<string, object> args)
         {
+            if (args == null) return;
             try
             {
-                var context = new RequestContext
+                var context = CreateContext(args);
+                _cache.Set($"req_{context.RequestId}", context, TimeSpan.FromMinutes(10));
+                
+                if (_queue.TryEnqueue(context.RequestId))
                 {
-                    RawArgs = args,
-                    RequestId = Guid.NewGuid().ToString("N"),
-                    CreatedAt = DateTime.UtcNow
-                };
-
-
-                if (args.TryGetValue("message", out var msg) && msg != null)
-                {
-                    context.CleanedMessage = msg.ToString();
-                }
-
-                if (args.TryGetValue("commandId", out var cmdId))
-                {
-                    context.EventType = "Command";
-                    context.CommandId = cmdId.ToString();
-                }
-                else if (args.ContainsKey("message"))
-                {
-                    context.EventType = "Chat";
+                    if (context.EventType != "Unknown")
+                        _logger.Info($"[Brain] Ingested {context.EventType}: {context.CleanedMessage}");
                 }
                 else
                 {
-                    context.EventType = "Unknown";
+                    _logger.Error($"[Brain] Failed to enqueue request {context.RequestId}");
                 }
-
-                _cache.Set($"req_{context.RequestId}", context, TimeSpan.FromMinutes(10));
-                _processingQueue.Writer.TryWrite(context.RequestId);
-                
-                _logger.Debug($"[Brain] Ingested {context.EventType} ({context.RequestId})");
             }
             catch (Exception ex)
             {
-                _logger.Error($"[Brain] Ingestion Failed: {ex.Message}");
+                _logger.Error($"[Brain] Ingest Failed: {ex.Message}");
             }
+        }
+
+        private RequestContext CreateContext(Dictionary<string, object> args)
+        {
+            var eventType = "Unknown";
+            var message = "";
+            var commandId = "";
+
+            if (args.ContainsKey("commandId")) 
+            {
+                eventType = "Command";
+                commandId = args["commandId"]?.ToString();
+                message = args.ContainsKey("rawInput") ? args["rawInput"]?.ToString() : "";
+            }
+            else if (args.ContainsKey("message"))
+            {
+                eventType = "Chat";
+                message = args["message"]?.ToString();
+            }
+
+            return new RequestContext 
+            { 
+                RequestId = Guid.NewGuid().ToString(),
+                RawArgs = args,
+                EventType = eventType,
+                CommandId = commandId,
+                CleanedMessage = message,
+                CreatedAt = DateTime.UtcNow
+            };
         }
 
         private async Task ProcessQueueAsync(CancellationToken ct)
@@ -78,9 +87,9 @@ namespace PNGTuber_GPTv2.Crypto
 
             try
             {
-                while (await _processingQueue.Reader.WaitToReadAsync(ct))
+                while (await _queue.WaitToReadAsync(ct))
                 {
-                    while (_processingQueue.Reader.TryRead(out var contextId))
+                    while (_queue.TryDequeue(out var contextId))
                     {
                         await RunPipelineAsync(contextId, ct);
                     }
