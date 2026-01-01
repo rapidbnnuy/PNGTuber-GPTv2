@@ -43,7 +43,7 @@
 
   <Target Name="EnforceQualityControl" AfterTargets="Build">
     <Message Text="✨ Verifying Code Quality Compliance (No Comments, Max 30 LOC)..." Importance="high" />
-    <Exec Command="dotnet test --filter QualityControlTests --no-build --logger &quot;console;verbosity=minimal&quot;" IgnoreExitCode="false" />
+    <Exec Command="dotnet test --filter QualityControlTests --no-build --configuration $(Configuration) --logger &quot;console;verbosity=minimal&quot;" IgnoreExitCode="false" />
   </Target>
 
 </Project>
