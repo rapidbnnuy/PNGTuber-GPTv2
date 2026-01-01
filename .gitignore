@@ -39,3 +39,6 @@ Generated\ Files/
 
 # MacOS
 .DS_Store
+
+# Local Env
+.env
